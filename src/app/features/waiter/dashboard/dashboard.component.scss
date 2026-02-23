@@ -1,0 +1,129 @@
+:host { display: block; height: 100%; }
+
+.waiter-container {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.products-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.category-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.search-field { width: 100%; }
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.product-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.1s;
+  text-align: center;
+  &:hover { box-shadow: 0 4px 12px rgba(0,0,0,.15); transform: translateY(-2px); }
+}
+
+.product-name { font-weight: 500; font-size: 14px; margin-bottom: 4px; }
+.product-price { color: #3f51b5; font-weight: 600; font-size: 13px; }
+.no-products { color: #999; text-align: center; grid-column: 1 / -1; padding: 24px 0; }
+
+.order-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  min-width: 280px;
+  max-width: 380px;
+}
+
+.full-width { width: 100%; }
+
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0;
+  color: #999;
+  mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 8px; }
+  p { margin: 4px 0; }
+  .empty-hint { font-size: 12px; }
+}
+
+.cart-item { padding: 8px 0; }
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.item-name { font-weight: 500; font-size: 14px; }
+.item-price { font-weight: 600; color: #3f51b5; font-size: 14px; }
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.item-qty { min-width: 28px; text-align: center; font-weight: 600; }
+.item-notes { margin-bottom: 8px; }
+
+.cart-totals { padding: 12px 0 4px; }
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.total-bold {
+  font-weight: 700;
+  font-size: 15px;
+  color: #222;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.hint-row {
+  font-size: 11px;
+  color: #999;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  flex-wrap: wrap;
+  button { flex: 1; min-width: 120px; }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 16px;
+  color: #666;
+}
