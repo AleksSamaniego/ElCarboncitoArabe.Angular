@@ -3,6 +3,8 @@ export const ApiRoutes = {
   products: 'products',
   categories: 'categories',
   customers: 'customers',
+  tables: 'tables',
+  platforms: 'platforms',
   auth: {
     login: 'auth/login',
     logout: 'auth/logout',

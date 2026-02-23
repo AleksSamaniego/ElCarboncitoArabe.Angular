@@ -1,0 +1,181 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { OrdersApiService, ChangeTypeRequest } from './orders-api.service';
+import { AppConfigService } from '../config/app-config.service';
+import {
+  OrderDto,
+  CreateOrderRequest,
+  UpdateOrderRequest,
+  CheckoutRequest,
+  OrderStatus,
+  OrderType,
+  PaymentMethod,
+  PaymentStatus
+} from '../../shared/models';
+
+const MOCK_ORDER: OrderDto = {
+  id: 1,
+  type: OrderType.DineIn,
+  status: OrderStatus.Pending,
+  paymentStatus: PaymentStatus.Unpaid,
+  tableId: 1,
+  tableNumber: 1,
+  items: [],
+  subtotal: 10,
+  tax: 1,
+  total: 11,
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-01T00:00:00Z'
+};
+
+describe('OrdersApiService', () => {
+  let service: OrdersApiService;
+  let httpMock: HttpTestingController;
+  let config: AppConfigService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    });
+    service = TestBed.inject(OrdersApiService);
+    httpMock = TestBed.inject(HttpTestingController);
+    config = TestBed.inject(AppConfigService);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  describe('getActiveOrders', () => {
+    it('should GET orders/active and return orders', () => {
+      service.getActiveOrders().subscribe(orders => {
+        expect(orders).toEqual([MOCK_ORDER]);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/active'));
+      expect(req.request.method).toBe('GET');
+      req.flush([MOCK_ORDER]);
+    });
+  });
+
+  describe('getOrder', () => {
+    it('should GET orders/:id and return the order', () => {
+      service.getOrder(1).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1'));
+      expect(req.request.method).toBe('GET');
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('createOrder', () => {
+    it('should POST to orders and return the created order', () => {
+      const createReq: CreateOrderRequest = {
+        type: OrderType.DineIn,
+        tableId: 1,
+        items: [{ productId: 1, quantity: 2 }]
+      };
+
+      service.createOrder(createReq).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders'));
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(createReq);
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('updateOrder', () => {
+    it('should PUT to orders/:id and return the updated order', () => {
+      const updateReq: UpdateOrderRequest = {
+        type: OrderType.DineIn,
+        tableId: 1,
+        items: [{ productId: 1, quantity: 3 }]
+      };
+
+      service.updateOrder(1, updateReq).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1'));
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(updateReq);
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('sendToKitchen', () => {
+    it('should POST to orders/:id/send-to-kitchen', () => {
+      service.sendToKitchen(1).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1/send-to-kitchen'));
+      expect(req.request.method).toBe('POST');
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('changeStatus', () => {
+    it('should PATCH orders/:id/status with the new status', () => {
+      service.changeStatus(1, OrderStatus.InProgress).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1/status'));
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({ status: OrderStatus.InProgress });
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('cancelOrder', () => {
+    it('should POST to orders/:id/cancel', () => {
+      service.cancelOrder(1).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1/cancel'));
+      expect(req.request.method).toBe('POST');
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('checkout', () => {
+    it('should POST to orders/:id/checkout with the checkout request', () => {
+      const checkoutReq: CheckoutRequest = { orderId: 1, paymentMethod: PaymentMethod.Cash };
+
+      service.checkout(1, checkoutReq).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1/checkout'));
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(checkoutReq);
+      req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('changeType', () => {
+    it('should PATCH orders/:id/type with the change type request', () => {
+      const changeTypeReq: ChangeTypeRequest = { type: OrderType.TakeAway };
+
+      service.changeType(1, changeTypeReq).subscribe(order => {
+        expect(order).toEqual(MOCK_ORDER);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1/type'));
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(changeTypeReq);
+      req.flush(MOCK_ORDER);
+    });
+  });
+});
