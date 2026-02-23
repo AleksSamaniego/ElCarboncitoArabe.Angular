@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Cambiar tipo de pedido #{{ data.order.id }}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Tipo de pedido</mat-label>
+    <mat-select formControlName="type">
+      <mat-option *ngFor="let opt of orderTypeOptions" [value]="opt.value">
+        {{ opt.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" *ngIf="selectedType === OrderType.DineIn">
+    <mat-label>Mesa</mat-label>
+    <mat-select formControlName="tableId">
+      <mat-option *ngFor="let t of tables" [value]="t.id">Mesa {{ t.number }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" *ngIf="selectedType === OrderType.Delivery">
+    <mat-label>Plataforma</mat-label>
+    <mat-select formControlName="platformId">
+      <mat-option *ngFor="let p of platforms" [value]="p.id">{{ p.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="confirm()" [disabled]="form.invalid">
+    <mat-icon>swap_horiz</mat-icon>
+    Cambiar tipo
+  </button>
+</mat-dialog-actions>
