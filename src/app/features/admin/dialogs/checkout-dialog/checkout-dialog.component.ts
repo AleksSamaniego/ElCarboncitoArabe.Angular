@@ -38,8 +38,8 @@ export class CheckoutDialogComponent {
       orderId: this.data.order.id,
       paymentMethod
     };
-    if (discount != null && discount !== '') req.discount = +discount;
-    if (tax != null && tax !== '') req.tax = +tax;
+    if (discount != null) req.discount = +discount;
+    if (tax != null) req.tax = +tax;
     this.dialogRef.close(req);
   }
 
