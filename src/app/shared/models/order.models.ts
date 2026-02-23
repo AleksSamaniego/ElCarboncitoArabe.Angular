@@ -10,6 +10,7 @@ export interface CreateOrderRequest {
   type: OrderType;
   tableId?: number;
   platformId?: number;
+  externalReference?: string;
   items: OrderItemUpsertDto[];
 }
 
@@ -17,6 +18,7 @@ export interface UpdateOrderRequest {
   type: OrderType;
   tableId?: number;
   platformId?: number;
+  externalReference?: string;
   items: OrderItemUpsertDto[];
 }
 
@@ -44,6 +46,7 @@ export interface OrderDto {
   tableNumber?: number;
   platformId?: number;
   platformName?: string;
+  externalReference?: string;
   items: OrderItemDto[];
   subtotal: number;
   tax: number;
