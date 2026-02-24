@@ -30,6 +30,15 @@
       </a>
       <a
         mat-list-item
+        routerLink="/admin/dashboard"
+        routerLinkActive="active-link"
+        *ngIf="hasRole(user, 'Owner')"
+      >
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+      <a
+        mat-list-item
         routerLink="/admin/orders"
         routerLinkActive="active-link"
         *ngIf="hasRole(user, 'Owner')"

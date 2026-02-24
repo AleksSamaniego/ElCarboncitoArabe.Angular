@@ -1,3 +1,7 @@
+$primary-red: #d32f2f;
+$primary-yellow: #ffc107;
+$primary-black: #1a1a1a;
+
 :host {
   display: block;
   height: 100%;
@@ -40,7 +44,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+
+  mat-chip {
+    &.mat-mdc-chip-selected {
+      background-color: $primary-red !important;
+      color: white !important;
+    }
+  }
 }
+
 .search-field {
   width: 100%;
 }
@@ -57,9 +69,12 @@
     box-shadow 0.2s,
     transform 0.1s;
   text-align: center;
+  border-left: 3px solid transparent;
+
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba($primary-red, 0.2);
     transform: translateY(-2px);
+    border-left-color: $primary-red;
   }
 }
 
@@ -67,9 +82,11 @@
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 4px;
+  color: $primary-black;
 }
+
 .product-price {
-  color: #3f51b5;
+  color: $primary-red;
   font-weight: 600;
   font-size: 13px;
 }

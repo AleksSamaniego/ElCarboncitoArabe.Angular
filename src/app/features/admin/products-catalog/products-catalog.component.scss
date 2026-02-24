@@ -1,3 +1,7 @@
+$primary-red: #d32f2f;
+$primary-yellow: #ffc107;
+$primary-black: #1a1a1a;
+
 :host { display: block; padding: 16px; }
 
 /* ── Header ── */
@@ -11,7 +15,7 @@
     font-size: 28px;
     width: 28px;
     height: 28px;
-    color: #1976d2;
+    color: $primary-red;
   }
 }
 
@@ -19,7 +23,7 @@
   margin: 0;
   font-size: 22px;
   font-weight: 600;
-  color: #222;
+  color: $primary-black;
   flex: 1;
 }
 
@@ -34,6 +38,12 @@
   height: 200px;
   gap: 16px;
   color: #666;
+
+  mat-spinner {
+    ::ng-deep circle {
+      stroke: $primary-red !important;
+    }
+  }
 }
 
 /* ── Empty state ── */

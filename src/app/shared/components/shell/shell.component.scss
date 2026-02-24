@@ -1,9 +1,15 @@
+$primary-red: #d32f2f;
+$primary-yellow: #ffc107;
+$primary-black: #1a1a1a;
+
 .shell-container {
   height: 100vh;
 }
 
 .shell-sidenav {
   width: 220px;
+  background-color: #fafafa;
+  border-right: 2px solid #e0e0e0;
 }
 
 .sidenav-header {
@@ -11,20 +17,57 @@
   align-items: center;
   gap: 8px;
   padding: 0 16px;
+  background-color: $primary-red !important;
+  color: white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  mat-icon {
+    color: white;
+  }
 }
 
 .sidenav-title {
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.5px;
+}
+
+// Style navigation items
+::ng-deep .mat-mdc-list-item {
+  transition: all 0.2s ease;
+
+  &:hover:not(.active-link) {
+    background-color: rgba($primary-red, 0.05) !important;
+  }
+
+  mat-icon {
+    color: rgba($primary-black, 0.7);
+    transition: color 0.2s ease;
+  }
+
+  &.active-link mat-icon {
+    color: $primary-red !important;
+  }
 }
 
 .shell-toolbar {
   position: sticky;
   top: 0;
   z-index: 10;
+  background-color: $primary-red !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  button {
+    color: white;
+  }
+
+  mat-icon {
+    color: white;
+  }
 }
 
 .toolbar-spacer {

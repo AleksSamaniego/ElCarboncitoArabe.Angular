@@ -11,6 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { ActiveOrdersComponent } from './active-orders/active-orders.component';
@@ -20,6 +23,7 @@ import { ProductDialogComponent } from './dialogs/product-dialog/product-dialog.
 import { ProductsCatalogComponent } from './products-catalog/products-catalog.component';
 import { CategoriesCatalogComponent } from './categories-catalog/categories-catalog.component';
 import { CategoryDialogComponent } from './dialogs/category-dialog/category-dialog.component';
+import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +34,7 @@ import { CategoryDialogComponent } from './dialogs/category-dialog/category-dial
     ProductsCatalogComponent,
     CategoriesCatalogComponent,
     CategoryDialogComponent,
+    OwnerDashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -45,6 +50,9 @@ import { CategoryDialogComponent } from './dialogs/category-dialog/category-dial
     MatSelectModule,
     MatTooltipModule,
     MatCheckboxModule,
+    MatCardModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
 })
 export class AdminModule {}

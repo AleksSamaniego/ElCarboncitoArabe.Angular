@@ -1,3 +1,7 @@
+$primary-red: #d32f2f;
+$primary-yellow: #ffc107;
+$primary-black: #1a1a1a;
+
 :host {
   display: block;
   height: 100%;
@@ -12,6 +16,12 @@
   height: 300px;
   gap: 16px;
   color: #666;
+
+  mat-spinner {
+    ::ng-deep circle {
+      stroke: $primary-red !important;
+    }
+  }
 }
 
 /* ── Board layout ── */
@@ -53,10 +63,11 @@
   border-radius: 8px 8px 0 0;
 
   &.col-pending {
-    background: #ff9800;
+    background: $primary-red;
   }
   &.col-received {
-    background: #ffc107;
+    background: $primary-yellow;
+    color: rgba($primary-black, 0.87);
   }
   &.col-inprogress {
     background: #2196f3;

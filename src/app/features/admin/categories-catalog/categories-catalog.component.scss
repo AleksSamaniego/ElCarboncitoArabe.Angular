@@ -1,3 +1,7 @@
+$primary-red: #d32f2f;
+$primary-yellow: #ffc107;
+$primary-black: #1a1a1a;
+
 :host {
   display: block;
   padding: 16px;
@@ -13,7 +17,7 @@
     font-size: 28px;
     width: 28px;
     height: 28px;
-    color: #1976d2;
+    color: $primary-red;
   }
 }
 
@@ -21,7 +25,7 @@
   margin: 0;
   font-size: 22px;
   font-weight: 600;
-  color: #222;
+  color: $primary-black;
 }
 
 .loading-container {
@@ -32,6 +36,12 @@
   height: 200px;
   gap: 16px;
   color: #666;
+
+  mat-spinner {
+    ::ng-deep circle {
+      stroke: $primary-red !important;
+    }
+  }
 }
 
 .empty-state {
@@ -53,7 +63,7 @@
 .table-wrapper {
   overflow-x: auto;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba($primary-red, 0.1);
 }
 
 .categories-table {
