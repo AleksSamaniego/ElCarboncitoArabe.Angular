@@ -45,7 +45,7 @@ export class ProductsApiService {
     return this.http.post<ProductDto>(url, req);
   }
 
-  updateProduct(id: number, req: CreateProductRequest): Observable<ProductDto> {
+  updateProduct(id: string, req: CreateProductRequest): Observable<ProductDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.products}/${id}`);
     return this.http.put<ProductDto>(url, req);
   }

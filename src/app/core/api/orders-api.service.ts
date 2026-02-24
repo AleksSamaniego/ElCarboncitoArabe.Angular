@@ -14,8 +14,8 @@ import {
 
 export interface ChangeTypeRequest {
   type: OrderType;
-  tableId?: number;
-  platformId?: number;
+  tableId?: string;
+  platformId?: string;
 }
 
 @Injectable({
@@ -41,7 +41,7 @@ export class OrdersApiService {
     return this.http.get<OrderDto[]>(url, { params });
   }
 
-  getOrder(id: number): Observable<OrderDto> {
+  getOrder(id: string): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}`);
     return this.http.get<OrderDto>(url);
   }
@@ -51,32 +51,32 @@ export class OrdersApiService {
     return this.http.post<OrderDto>(url, req);
   }
 
-  updateOrder(id: number, req: UpdateOrderRequest): Observable<OrderDto> {
+  updateOrder(id: string, req: UpdateOrderRequest): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}`);
     return this.http.put<OrderDto>(url, req);
   }
 
-  sendToKitchen(id: number): Observable<OrderDto> {
+  sendToKitchen(id: string): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/send-to-kitchen`);
     return this.http.post<OrderDto>(url, {});
   }
 
-  changeStatus(id: number, status: OrderStatus): Observable<OrderDto> {
+  changeStatus(id: string, status: OrderStatus): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/status`);
     return this.http.post<OrderDto>(url, { status });
   }
 
-  cancelOrder(id: number): Observable<OrderDto> {
+  cancelOrder(id: string): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/cancel`);
     return this.http.post<OrderDto>(url, {});
   }
 
-  checkout(id: number, req: CheckoutRequest): Observable<OrderDto> {
+  checkout(id: string, req: CheckoutRequest): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/checkout`);
     return this.http.post<OrderDto>(url, req);
   }
 
-  changeType(id: number, req: ChangeTypeRequest): Observable<OrderDto> {
+  changeType(id: string, req: ChangeTypeRequest): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/change-type`);
     return this.http.post<OrderDto>(url, req);
   }

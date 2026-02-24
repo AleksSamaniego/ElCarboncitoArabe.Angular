@@ -1,36 +1,36 @@
 import { OrderType, OrderStatus, PaymentMethod, PaymentStatus } from './enums';
 
 export interface OrderItemUpsertDto {
-  productId: number;
+  productId: string;
   quantity: number;
   notes?: string;
 }
 
 export interface CreateOrderRequest {
   type: OrderType;
-  tableId?: number;
-  platformId?: number;
+  tableId?: string;
+  platformId?: string;
   externalReference?: string;
   items: OrderItemUpsertDto[];
 }
 
 export interface UpdateOrderRequest {
   type: OrderType;
-  tableId?: number;
-  platformId?: number;
+  tableId?: string;
+  platformId?: string;
   externalReference?: string;
   items: OrderItemUpsertDto[];
 }
 
 export interface CheckoutRequest {
-  orderId: number;
+  orderId: string;
   paymentMethod: PaymentMethod;
   discount?: number;
   tax?: number;
 }
 
 export interface OrderItemDto {
-  productId: number;
+  productId: string;
   productName: string;
   quantity: number;
   unitPrice: number;
@@ -39,14 +39,14 @@ export interface OrderItemDto {
 }
 
 export interface OrderDto {
-  id: number;
+  id: string;
   type: OrderType;
   status: OrderStatus;
   paymentMethod?: PaymentMethod;
   paymentStatus: PaymentStatus;
-  tableId?: number;
+  tableId?: string;
   tableNumber?: number;
-  platformId?: number;
+  platformId?: string;
   platformName?: string;
   externalReference?: string;
   items: OrderItemDto[];

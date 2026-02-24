@@ -131,7 +131,7 @@ describe('OrdersRealtimeService', () => {
 
   describe('event observables', () => {
     const mockOrder: OrderDto = {
-      id: 42,
+      id: 'order-guid-42',
       type: OrderType.DineIn,
       status: OrderStatus.Pending,
       paymentStatus: PaymentStatus.Unpaid,

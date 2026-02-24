@@ -1,9 +1,9 @@
 export interface ProductDto {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   price: number;
-  categoryId: number;
+  categoryId: string;
   isAvailable: boolean;
   imageUrl?: string;
 }
@@ -12,7 +12,7 @@ export interface CreateProductRequest {
   name: string;
   description?: string;
   price: number;
-  categoryId: number;
+  categoryId: string;
   isAvailable: boolean;
   imageUrl?: string;
 }

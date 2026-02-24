@@ -1,5 +1,5 @@
 export interface PlatformDto {
-  id: number;
+  id: string;
   name: string;
   commissionRate: number;
 }

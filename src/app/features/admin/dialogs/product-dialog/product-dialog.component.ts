@@ -44,7 +44,7 @@ export class ProductDialogComponent implements OnInit {
     const req: CreateProductRequest = {
       name,
       price: +price,
-      categoryId: +categoryId,
+      categoryId: categoryId,
       isAvailable
     };
     if (description) req.description = description;
