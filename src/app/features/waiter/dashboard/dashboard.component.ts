@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, combineLatest } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, combineLatest, of } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 import { OrdersApiService } from '../../../core/api/orders-api.service';
 import { ProductsApiService } from '../../../core/api/products-api.service';
@@ -16,7 +16,7 @@ import {
   ProductDto,
   CategoryDto,
   TableDto,
-  PlatformDto
+  PlatformDto,
 } from '../../../shared/models';
 
 interface CartItem {
@@ -30,7 +30,7 @@ interface CartItem {
 @Component({
   selector: 'app-waiter-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   readonly OrderType = OrderType;
@@ -54,8 +54,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   readonly orderTypes = [
     { value: OrderType.DineIn, label: 'Mesa (Dine In)' },
-    { value: OrderType.TakeAway, label: 'Para llevar' },
-    { value: OrderType.Delivery, label: 'Plataforma' }
+    { value: OrderType.Takeaway, label: 'Para llevar' },
+    { value: OrderType.Platform, label: 'Plataforma' },
   ];
 
   private readonly destroy$ = new Subject<void>();
@@ -67,13 +67,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private readonly tablesApi: TablesApiService,
     private readonly platformsApi: PlatformsApiService,
     private readonly categoriesApi: CategoriesApiService,
-    private readonly realtime: OrdersRealtimeService
+    private readonly realtime: OrdersRealtimeService,
   ) {
     this.orderForm = this.fb.group({
-      type: [OrderType.TakeAway, Validators.required],
+      type: [OrderType.Takeaway, Validators.required],
       tableId: [null],
-      platformId: [null],
-      externalReference: ['']
+      platformName: [null],
+      externalReference: [''],
     });
   }
 
@@ -89,29 +89,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.tablesApi.getTables(),
       this.platformsApi.getPlatforms(),
       this.productsApi.getProducts(),
-      this.categoriesApi.getCategories()
-    ]).pipe(takeUntil(this.destroy$)).subscribe({
-      next: ([tables, platforms, products, categories]) => {
-        this.tables = tables;
-        this.platforms = platforms;
-        this.products = products;
-        this.categories = categories;
-        this.loading = false;
-        this.loadActiveOrder();
-      },
-      error: () => { this.loading = false; }
-    });
+      this.categoriesApi.getCategories(),
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ([tables, platforms, products, categories]) => {
+          this.tables = tables;
+          this.platforms = platforms;
+          this.products = products;
+          this.categories = categories;
+          this.loading = false;
+          this.loadActiveOrder();
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 
   private loadActiveOrder(): void {
-    this.ordersApi.getActiveOrders().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (orders) => {
-        const pending = orders.find(o => o.status === OrderStatus.Pending);
-        if (pending) {
-          this.applyOrder(pending);
-        }
-      }
-    });
+    this.ordersApi
+      .getActiveOrders()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (orders) => {
+          const draft = orders.find((o) => o.status === OrderStatus.Draft);
+          if (draft) {
+            this.applyOrder(draft);
+          }
+        },
+      });
   }
 
   private applyOrder(order: OrderDto): void {
@@ -119,32 +126,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.orderForm.patchValue({
       type: order.type,
       tableId: order.tableId ?? null,
-      platformId: order.platformId ?? null,
-      externalReference: order.externalReference ?? ''
+      platformName: order.platformName ?? null,
+      externalReference: order.externalReference ?? '',
     });
-    this.cartItems = order.items.map(item => ({
+    this.cartItems = order.items.map((item) => ({
       productId: item.productId,
-      productName: item.productName,
+      productName: item.productNameSnapshot,
       quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      notes: item.notes ?? ''
+      unitPrice: item.unitPriceSnapshot,
+      notes: item.notes ?? '',
     }));
     this.updateTypeValidators(order.type);
   }
 
   private subscribeToTypeChanges(): void {
-    this.orderForm.get('type')!.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(type => this.updateTypeValidators(type));
+    this.orderForm
+      .get('type')!
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((type) => this.updateTypeValidators(type));
   }
 
   private updateTypeValidators(type: OrderType): void {
     const tableCtrl = this.orderForm.get('tableId')!;
-    const platformCtrl = this.orderForm.get('platformId')!;
+    const platformCtrl = this.orderForm.get('platformName')!;
     if (type === OrderType.DineIn) {
       tableCtrl.setValidators(Validators.required);
       platformCtrl.clearValidators();
-    } else if (type === OrderType.Delivery) {
+    } else if (type === OrderType.Platform) {
       platformCtrl.setValidators(Validators.required);
       tableCtrl.clearValidators();
     } else {
@@ -158,14 +166,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private subscribeToRealtime(): void {
     this.realtime.orderUpdated$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => {
+      .subscribe((order) => {
         if (this.activeOrder && order.id === this.activeOrder.id) {
           this.applyOrder(order);
         }
       });
     this.realtime.orderStatusChanged$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => {
+      .subscribe((order) => {
         if (this.activeOrder && order.id === this.activeOrder.id) {
           this.applyOrder(order);
         }
@@ -173,15 +181,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   get filteredProducts(): ProductDto[] {
-    return this.products.filter(p => {
-      const matchesCategory = this.selectedCategoryId == null || p.categoryId === this.selectedCategoryId;
-      const matchesSearch = !this.searchText || p.name.toLowerCase().includes(this.searchText.toLowerCase());
-      return matchesCategory && matchesSearch && p.isAvailable;
+    return this.products.filter((p) => {
+      const matchesCategory =
+        this.selectedCategoryId == null ||
+        p.categoryId === this.selectedCategoryId;
+      const matchesSearch =
+        !this.searchText ||
+        p.name.toLowerCase().includes(this.searchText.toLowerCase());
+      return matchesCategory && matchesSearch && p.isActive;
     });
   }
 
   get subtotal(): number {
-    return this.cartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+    return this.cartItems.reduce(
+      (sum, item) => sum + item.unitPrice * item.quantity,
+      0,
+    );
   }
 
   selectCategory(id: string | null): void {
@@ -189,7 +204,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   addToCart(product: ProductDto): void {
-    const existing = this.cartItems.find(i => i.productId === product.id);
+    const existing = this.cartItems.find((i) => i.productId === product.id);
     if (existing) {
       existing.quantity++;
     } else {
@@ -198,7 +213,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         productName: product.name,
         quantity: 1,
         unitPrice: product.price,
-        notes: ''
+        notes: '',
       });
     }
   }
@@ -216,51 +231,76 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   removeItem(item: CartItem): void {
-    this.cartItems = this.cartItems.filter(i => i !== item);
+    this.cartItems = this.cartItems.filter((i) => i !== item);
   }
 
   save(): void {
     if (this.orderForm.invalid || this.saving) return;
     this.saving = true;
     const val = this.orderForm.value;
-    const req = {
+    const createReq = {
       type: val.type as OrderType,
       tableId: val.type === OrderType.DineIn ? val.tableId : undefined,
-      platformId: val.type === OrderType.Delivery ? val.platformId : undefined,
-      externalReference: val.type === OrderType.Delivery && val.externalReference ? val.externalReference : undefined,
-      items: this.cartItems.map(i => ({
+      platformName:
+        val.type === OrderType.Platform ? val.platformName : undefined,
+      externalReference:
+        val.type === OrderType.Platform && val.externalReference
+          ? val.externalReference
+          : undefined,
+    };
+
+    const updateReq = {
+      items: this.cartItems.map((i) => ({
         productId: i.productId,
         quantity: i.quantity,
-        notes: i.notes || undefined
-      }))
+        notes: i.notes || undefined,
+      })),
     };
 
     const obs = this.activeOrder
-      ? this.ordersApi.updateOrder(this.activeOrder.id, req)
-      : this.ordersApi.createOrder(req);
+      ? this.ordersApi.updateOrder(this.activeOrder.id, updateReq)
+      : this.ordersApi
+          .createOrder(createReq)
+          .pipe(
+            switchMap((order) =>
+              this.cartItems.length > 0
+                ? this.ordersApi.updateOrder(order.id, updateReq)
+                : of(order),
+            ),
+          );
 
     obs.pipe(takeUntil(this.destroy$)).subscribe({
       next: (order) => {
         this.applyOrder(order);
         this.saving = false;
       },
-      error: () => { this.saving = false; }
+      error: () => {
+        this.saving = false;
+      },
     });
   }
 
   sendToKitchen(): void {
     if (!this.activeOrder || this.sendingToKitchen) return;
     this.sendingToKitchen = true;
-    this.ordersApi.sendToKitchen(this.activeOrder.id)
+    this.ordersApi
+      .sendToKitchen(this.activeOrder.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.activeOrder = null;
           this.cartItems = [];
-          this.orderForm.reset({ type: OrderType.TakeAway, tableId: null, platformId: null, externalReference: '' });
+          this.orderForm.reset({
+            type: OrderType.Takeaway,
+            tableId: null,
+            platformName: null,
+            externalReference: '',
+          });
           this.sendingToKitchen = false;
         },
-        error: () => { this.sendingToKitchen = false; }
+        error: () => {
+          this.sendingToKitchen = false;
+        },
       });
   }
 

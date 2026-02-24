@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { AuthStateService } from './auth-state.service';
 import { AppConfigService } from '../config/app-config.service';
@@ -12,9 +15,13 @@ const MOCK_TOKEN =
   '.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
 const MOCK_LOGIN_RESPONSE: LoginResponse = {
-  accessToken: MOCK_TOKEN,
-  refreshToken: 'refresh-token',
-  expiresIn: 3600
+  token: MOCK_TOKEN,
+  user: {
+    id: '1',
+    name: 'admin',
+    email: 'admin@test.com',
+    role: 'Admin',
+  },
 };
 
 describe('AuthService', () => {
@@ -25,7 +32,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -45,10 +52,13 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should POST to the correct URL and return the response', () => {
-      const credentials: LoginRequest = { email: 'admin@test.com', password: 'secret' };
+      const credentials: LoginRequest = {
+        email: 'admin@test.com',
+        password: 'secret',
+      };
       const expectedUrl = config.buildApiUrl('auth/login');
 
-      service.login(credentials).subscribe(response => {
+      service.login(credentials).subscribe((response) => {
         expect(response).toEqual(MOCK_LOGIN_RESPONSE);
       });
 
@@ -59,18 +69,26 @@ describe('AuthService', () => {
     });
 
     it('should store the token in localStorage after login', () => {
-      service.login({ email: 'admin@test.com', password: 'secret' }).subscribe();
-      httpMock.expectOne(config.buildApiUrl('auth/login')).flush(MOCK_LOGIN_RESPONSE);
+      service
+        .login({ email: 'admin@test.com', password: 'secret' })
+        .subscribe();
+      httpMock
+        .expectOne(config.buildApiUrl('auth/login'))
+        .flush(MOCK_LOGIN_RESPONSE);
       expect(localStorage.getItem('auth_token')).toBe(MOCK_TOKEN);
     });
 
     it('should update authState with the decoded user after login', () => {
-      service.login({ email: 'admin@test.com', password: 'secret' }).subscribe();
-      httpMock.expectOne(config.buildApiUrl('auth/login')).flush(MOCK_LOGIN_RESPONSE);
+      service
+        .login({ email: 'admin@test.com', password: 'secret' })
+        .subscribe();
+      httpMock
+        .expectOne(config.buildApiUrl('auth/login'))
+        .flush(MOCK_LOGIN_RESPONSE);
       const user = authState.currentUser;
       expect(user).toBeTruthy();
       expect(user?.id).toBe('1');
-      expect(user?.username).toBe('admin');
+      expect(user?.name).toBe('admin');
       expect(user?.email).toBe('admin@test.com');
       expect(user?.role).toBe('Admin');
     });
@@ -95,8 +113,12 @@ describe('AuthService', () => {
     });
 
     it('should clear the current user in authState', () => {
-      service.login({ email: 'admin@test.com', password: 'secret' }).subscribe();
-      httpMock.expectOne(config.buildApiUrl('auth/login')).flush(MOCK_LOGIN_RESPONSE);
+      service
+        .login({ email: 'admin@test.com', password: 'secret' })
+        .subscribe();
+      httpMock
+        .expectOne(config.buildApiUrl('auth/login'))
+        .flush(MOCK_LOGIN_RESPONSE);
       service.logout();
       expect(authState.currentUser).toBeNull();
     });
@@ -112,7 +134,7 @@ describe('AuthService', () => {
       const user = service.getCurrentUser();
       expect(user).toBeTruthy();
       expect(user?.id).toBe('1');
-      expect(user?.username).toBe('admin');
+      expect(user?.name).toBe('admin');
       expect(user?.email).toBe('admin@test.com');
       expect(user?.role).toBe('Admin');
     });

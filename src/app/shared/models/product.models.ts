@@ -1,18 +1,22 @@
 export interface ProductDto {
   id: string;
-  name: string;
-  description?: string;
-  price: number;
   categoryId: string;
-  isAvailable: boolean;
-  imageUrl?: string;
+  name: string;
+  price: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
 }
 
 export interface CreateProductRequest {
-  name: string;
-  description?: string;
-  price: number;
   categoryId: string;
-  isAvailable: boolean;
-  imageUrl?: string;
+  name: string;
+  price: number;
+}
+
+export interface UpdateProductRequest {
+  categoryId: string;
+  name: string;
+  price: number;
+  isActive: boolean;
 }

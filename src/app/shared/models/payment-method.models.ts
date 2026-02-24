@@ -1,4 +1,4 @@
 export interface PaymentMethodDto {
-  id: string;
+  value: number;
   name: string;
 }

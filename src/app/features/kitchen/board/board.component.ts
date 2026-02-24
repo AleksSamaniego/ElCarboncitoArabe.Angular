@@ -16,7 +16,7 @@ interface KanbanColumn {
 @Component({
   selector: 'app-kitchen-board',
   templateUrl: './board.component.html',
-  styleUrl: './board.component.scss'
+  styleUrl: './board.component.scss',
 })
 export class BoardComponent implements OnInit, OnDestroy {
   readonly OrderStatus = OrderStatus;
@@ -27,35 +27,63 @@ export class BoardComponent implements OnInit, OnDestroy {
   advancing: { [orderId: string]: boolean } = {};
 
   readonly columns: KanbanColumn[] = [
-    { status: OrderStatus.Pending,    label: 'Enviado a Cocina', colorClass: 'col-pending',    icon: 'send' },
-    { status: OrderStatus.InProgress, label: 'En Progreso',      colorClass: 'col-inprogress', icon: 'local_fire_department' },
-    { status: OrderStatus.Ready,      label: 'Listo',            colorClass: 'col-ready',      icon: 'check_circle' },
-    { status: OrderStatus.Delivered,  label: 'Entregado',        colorClass: 'col-delivered',  icon: 'done_all' }
+    {
+      status: OrderStatus.SentToKitchen,
+      label: 'Enviado a Cocina',
+      colorClass: 'col-pending',
+      icon: 'send',
+    },
+    {
+      status: OrderStatus.Received,
+      label: 'Recibido',
+      colorClass: 'col-received',
+      icon: 'mark_email_read',
+    },
+    {
+      status: OrderStatus.InProgress,
+      label: 'En Progreso',
+      colorClass: 'col-inprogress',
+      icon: 'local_fire_department',
+    },
+    {
+      status: OrderStatus.Ready,
+      label: 'Listo',
+      colorClass: 'col-ready',
+      icon: 'check_circle',
+    },
+    {
+      status: OrderStatus.Delivered,
+      label: 'Entregado',
+      colorClass: 'col-delivered',
+      icon: 'done_all',
+    },
   ];
 
   private readonly nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
-    [OrderStatus.Pending]:    OrderStatus.InProgress,
+    [OrderStatus.SentToKitchen]: OrderStatus.Received,
+    [OrderStatus.Received]: OrderStatus.InProgress,
     [OrderStatus.InProgress]: OrderStatus.Ready,
-    [OrderStatus.Ready]:      OrderStatus.Delivered
+    [OrderStatus.Ready]: OrderStatus.Delivered,
   };
 
   private readonly nextLabel: Partial<Record<OrderStatus, string>> = {
-    [OrderStatus.Pending]:    'Iniciar',
+    [OrderStatus.SentToKitchen]: 'Recibir',
+    [OrderStatus.Received]: 'Iniciar',
     [OrderStatus.InProgress]: 'Marcar listo',
-    [OrderStatus.Ready]:      'Entregar'
+    [OrderStatus.Ready]: 'Entregar',
   };
 
   readonly orderTypeLabel: Record<OrderType, string> = {
-    [OrderType.DineIn]:   'Comer ahí',
-    [OrderType.TakeAway]: 'Para llevar',
-    [OrderType.Delivery]: 'Plataforma'
+    [OrderType.DineIn]: 'Comer ahí',
+    [OrderType.Takeaway]: 'Para llevar',
+    [OrderType.Platform]: 'Plataforma',
   };
 
   private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly ordersApi: OrdersApiService,
-    private readonly realtime: OrdersRealtimeService
+    private readonly realtime: OrdersRealtimeService,
   ) {}
 
   ngOnInit(): void {
@@ -65,21 +93,26 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   private loadOrders(): void {
     this.loading = true;
-    this.ordersApi.getActiveOrders()
+    this.ordersApi
+      .getActiveOrders()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (orders) => {
-          this.orders = orders.filter(o => o.status !== OrderStatus.Cancelled);
+          this.orders = orders.filter(
+            (o) => o.status !== OrderStatus.Cancelled,
+          );
           this.loading = false;
         },
-        error: () => { this.loading = false; }
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
   private subscribeToRealtime(): void {
     this.realtime.orderCreated$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => {
+      .subscribe((order) => {
         if (order.status !== OrderStatus.Cancelled) {
           this.upsertOrder(order);
         }
@@ -87,11 +120,11 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     this.realtime.orderUpdated$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.upsertOrder(order));
+      .subscribe((order) => this.upsertOrder(order));
 
     this.realtime.orderStatusChanged$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => {
+      .subscribe((order) => {
         if (order.status === OrderStatus.Cancelled) {
           this.removeOrder(order.id);
         } else {
@@ -101,20 +134,20 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     this.realtime.orderCancelled$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.removeOrder(order.id));
+      .subscribe((order) => this.removeOrder(order.id));
 
     this.realtime.orderTypeChanged$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.upsertOrder(order));
+      .subscribe((order) => this.upsertOrder(order));
   }
 
   private upsertOrder(order: OrderDto): void {
-    const idx = this.orders.findIndex(o => o.id === order.id);
+    const idx = this.orders.findIndex((o) => o.id === order.id);
     if (idx >= 0) {
       this.orders = [
         ...this.orders.slice(0, idx),
         order,
-        ...this.orders.slice(idx + 1)
+        ...this.orders.slice(idx + 1),
       ];
     } else {
       this.orders = [...this.orders, order];
@@ -122,11 +155,11 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   private removeOrder(id: string): void {
-    this.orders = this.orders.filter(o => o.id !== id);
+    this.orders = this.orders.filter((o) => o.id !== id);
   }
 
   ordersForColumn(status: OrderStatus): OrderDto[] {
-    return this.orders.filter(o => o.status === status);
+    return this.orders.filter((o) => o.status === status);
   }
 
   getNextLabel(order: OrderDto): string | null {
@@ -138,14 +171,17 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!next || this.advancing[order.id]) return;
 
     this.advancing[order.id] = true;
-    this.ordersApi.changeStatus(order.id, next)
+    this.ordersApi
+      .changeStatus(order.id, next)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updated) => {
           this.upsertOrder(updated);
           delete this.advancing[order.id];
         },
-        error: () => { delete this.advancing[order.id]; }
+        error: () => {
+          delete this.advancing[order.id];
+        },
       });
   }
 

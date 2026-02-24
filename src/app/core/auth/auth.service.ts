@@ -23,7 +23,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(url, credentials).pipe(
       tap((response) => {
         this.setToken(response.token);
-        const user = this.decodeToken(response.token);
+        const user = response.user ?? this.decodeToken(response.token);
         this.authState.setCurrentUser(user);
       }),
     );
@@ -66,15 +66,14 @@ export class AuthService {
       }
 
       const id: string = data.sub ?? data.id ?? '';
-      const username: string =
-        data.username ?? data.unique_name ?? data.name ?? '';
-      if (!id || !username) {
+      const name: string = data.name ?? data.username ?? data.unique_name ?? '';
+      if (!id || !name) {
         return null;
       }
 
       return {
         id,
-        username,
+        name,
         email: data.email ?? '',
         role:
           data.role ??

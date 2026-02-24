@@ -1,46 +1,79 @@
 <h2 mat-dialog-title>Cobrar Pedido #{{ data.order.id }}</h2>
 
 <mat-dialog-content [formGroup]="form">
-
   <div class="checkout-summary">
     <div class="summary-row">
       <span>Subtotal</span>
-      <span>{{ data.order.subtotal | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+      <span>{{
+        data.order.subtotal | currency: "MXN" : "symbol-narrow" : "1.2-2"
+      }}</span>
     </div>
     <div class="summary-row">
       <span>Impuesto</span>
-      <span>{{ data.order.tax | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+      <span>{{
+        data.order.tax | currency: "MXN" : "symbol-narrow" : "1.2-2"
+      }}</span>
     </div>
     <div class="summary-row total-row">
       <span>Total</span>
-      <span>{{ data.order.total | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+      <span>{{
+        data.order.total | currency: "MXN" : "symbol-narrow" : "1.2-2"
+      }}</span>
     </div>
   </div>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Método de pago</mat-label>
     <mat-select formControlName="paymentMethod">
-      <mat-option *ngFor="let pm of paymentMethods" [value]="pm.value">{{ pm.label }}</mat-option>
+      <mat-option *ngFor="let pm of paymentMethods" [value]="pm.value">{{
+        pm.label
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Descuento (opcional)</mat-label>
-    <input matInput type="number" min="0" formControlName="discount" placeholder="0.00">
+    <input
+      matInput
+      type="number"
+      min="0"
+      formControlName="discount"
+      placeholder="0.00"
+    />
     <mat-icon matSuffix>discount</mat-icon>
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Impuesto adicional (opcional)</mat-label>
-    <input matInput type="number" min="0" formControlName="tax" placeholder="0.00">
+    <input
+      matInput
+      type="number"
+      min="0"
+      formControlName="tax"
+      placeholder="0.00"
+    />
     <mat-icon matSuffix>receipt</mat-icon>
   </mat-form-field>
 
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Notas de pago (opcional)</mat-label>
+    <textarea
+      matInput
+      rows="2"
+      formControlName="paymentNotes"
+      placeholder="Ej. Pago mixto"
+    ></textarea>
+  </mat-form-field>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="confirm()" [disabled]="form.invalid">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="confirm()"
+    [disabled]="form.invalid"
+  >
     <mat-icon>payments</mat-icon>
     Confirmar Pago
   </button>

@@ -1,48 +1,61 @@
 <div class="kitchen-board" *ngIf="!loading; else loadingTpl">
-
   <div class="kanban-columns">
-
     <div class="kanban-column" *ngFor="let col of columns">
-
       <div class="column-header" [ngClass]="col.colorClass">
         <mat-icon>{{ col.icon }}</mat-icon>
         <span class="column-title">{{ col.label }}</span>
-        <span class="column-count">{{ ordersForColumn(col.status).length }}</span>
+        <span class="column-count">{{
+          ordersForColumn(col.status).length
+        }}</span>
       </div>
 
       <div class="column-body">
-
-        <p class="empty-column" *ngIf="ordersForColumn(col.status).length === 0">
+        <p
+          class="empty-column"
+          *ngIf="ordersForColumn(col.status).length === 0"
+        >
           Sin pedidos
         </p>
 
-        <mat-card class="order-card" *ngFor="let order of ordersForColumn(col.status)">
-
+        <mat-card
+          class="order-card"
+          *ngFor="let order of ordersForColumn(col.status)"
+        >
           <!-- Type badge + location -->
           <mat-card-header>
             <mat-card-title class="card-title">
               <span class="type-badge" [ngClass]="col.colorClass">
                 <mat-icon class="badge-icon">
-                  {{ order.type === OrderType.DineIn ? 'restaurant' : order.type === OrderType.TakeAway ? 'shopping_bag' : 'delivery_dining' }}
+                  {{
+                    order.type === OrderType.DineIn
+                      ? "restaurant"
+                      : order.type === OrderType.Takeaway
+                        ? "shopping_bag"
+                        : "delivery_dining"
+                  }}
                 </mat-icon>
                 {{ orderTypeLabel[order.type] }}
               </span>
             </mat-card-title>
             <mat-card-subtitle>
-              <span *ngIf="order.type === OrderType.DineIn">Mesa {{ order.tableNumber }}</span>
-              <span *ngIf="order.type === OrderType.Delivery">
-                {{ order.platformName }}<span *ngIf="order.externalReference"> · #{{ order.externalReference }}</span>
+              <span *ngIf="order.type === OrderType.DineIn"
+                >Mesa {{ order.tableId || "—" }}</span
+              >
+              <span *ngIf="order.type === OrderType.Platform">
+                {{ order.platformName
+                }}<span *ngIf="order.externalReference">
+                  · #{{ order.externalReference }}</span
+                >
               </span>
-              <span *ngIf="order.type === OrderType.TakeAway">Para llevar</span>
+              <span *ngIf="order.type === OrderType.Takeaway">Para llevar</span>
             </mat-card-subtitle>
           </mat-card-header>
 
           <mat-card-content>
-
             <!-- Time -->
             <div class="order-time">
               <mat-icon class="time-icon">schedule</mat-icon>
-              {{ order.createdAt | date:'HH:mm' }}
+              {{ order.createdAt | date: "HH:mm" }}
             </div>
 
             <mat-divider></mat-divider>
@@ -51,11 +64,12 @@
             <ul class="items-list">
               <li *ngFor="let item of order.items" class="item-row">
                 <span class="item-qty">{{ item.quantity }}×</span>
-                <span class="item-name">{{ item.productName }}</span>
-                <span class="item-notes" *ngIf="item.notes">— {{ item.notes }}</span>
+                <span class="item-name">{{ item.productNameSnapshot }}</span>
+                <span class="item-notes" *ngIf="item.notes"
+                  >— {{ item.notes }}</span
+                >
               </li>
             </ul>
-
           </mat-card-content>
 
           <!-- Advance button -->
@@ -64,24 +78,26 @@
               mat-raised-button
               [ngClass]="col.colorClass + '-btn'"
               [disabled]="advancing[order.id]"
-              (click)="advance(order)">
+              (click)="advance(order)"
+            >
               <mat-icon>arrow_forward</mat-icon>
-              {{ advancing[order.id] ? 'Actualizando...' : getNextLabel(order) }}
+              {{
+                advancing[order.id] ? "Actualizando..." : getNextLabel(order)
+              }}
             </button>
           </mat-card-actions>
-
         </mat-card>
-
       </div>
     </div>
-
   </div>
-
 </div>
 
 <ng-template #loadingTpl>
   <div class="loading-container">
-    <mat-progress-spinner mode="indeterminate" diameter="56"></mat-progress-spinner>
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="56"
+    ></mat-progress-spinner>
     <p>Cargando pedidos...</p>
   </div>
 </ng-template>

@@ -1,25 +1,27 @@
 export enum OrderType {
-  DineIn = 'DineIn',
-  TakeAway = 'TakeAway',
-  Delivery = 'Delivery'
+  DineIn = 0,
+  Takeaway = 1,
+  Platform = 2,
 }
 
 export enum OrderStatus {
-  Pending = 'Pending',
-  InProgress = 'InProgress',
-  Ready = 'Ready',
-  Delivered = 'Delivered',
-  Cancelled = 'Cancelled'
+  Draft = 0,
+  SentToKitchen = 1,
+  Received = 2,
+  InProgress = 3,
+  Ready = 4,
+  Delivered = 5,
+  Cancelled = 6,
+  Paid = 7,
 }
 
 export enum PaymentMethod {
-  Cash = 'Cash',
-  Card = 'Card',
-  Transfer = 'Transfer'
+  Cash = 0,
+  Card = 1,
+  Transfer = 2,
 }
 
 export enum PaymentStatus {
-  Unpaid = 'Unpaid',
-  Paid = 'Paid',
-  Refunded = 'Refunded'
+  Unpaid = 0,
+  Paid = 1,
 }

@@ -3,15 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../config/app-config.service';
 import { ApiRoutes } from '../config/api-routes';
-import { PlatformDto, CreatePlatformRequest } from '../../shared/models';
+import {
+  PlatformDto,
+  CreatePlatformRequest,
+  UpdatePlatformRequest,
+} from '../../shared/models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlatformsApiService {
   constructor(
     private readonly http: HttpClient,
-    private readonly config: AppConfigService
+    private readonly config: AppConfigService,
   ) {}
 
   getPlatforms(): Observable<PlatformDto[]> {
@@ -29,7 +33,10 @@ export class PlatformsApiService {
     return this.http.post<PlatformDto>(url, req);
   }
 
-  updatePlatform(id: string, req: CreatePlatformRequest): Observable<PlatformDto> {
+  updatePlatform(
+    id: string,
+    req: UpdatePlatformRequest,
+  ): Observable<PlatformDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.platforms}/${id}`);
     return this.http.put<PlatformDto>(url, req);
   }

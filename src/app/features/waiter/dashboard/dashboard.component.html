@@ -1,19 +1,19 @@
 <div class="waiter-container" *ngIf="!loading; else loadingTpl">
-
   <!-- Left panel: Products -->
   <div class="products-panel">
-
     <!-- Category filter chips -->
     <mat-chip-listbox class="category-chips" aria-label="Filtrar por categoría">
       <mat-chip-option
         [selected]="selectedCategoryId === null"
-        (click)="selectCategory(null)">
+        (click)="selectCategory(null)"
+      >
         Todos
       </mat-chip-option>
       <mat-chip-option
         *ngFor="let cat of categories"
         [selected]="selectedCategoryId === cat.id"
-        (click)="selectCategory(cat.id)">
+        (click)="selectCategory(cat.id)"
+      >
         {{ cat.name }}
       </mat-chip-option>
     </mat-chip-listbox>
@@ -21,7 +21,11 @@
     <!-- Search -->
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Buscar producto</mat-label>
-      <input matInput [(ngModel)]="searchText" placeholder="Escribe para buscar...">
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        placeholder="Escribe para buscar..."
+      />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 
@@ -30,22 +34,23 @@
       <mat-card
         *ngFor="let product of filteredProducts"
         class="product-card"
-        (click)="addToCart(product)">
+        (click)="addToCart(product)"
+      >
         <mat-card-content>
           <div class="product-name">{{ product.name }}</div>
-          <div class="product-price">{{ product.price | currency:'MXN':'symbol-narrow':'1.2-2' }}</div>
+          <div class="product-price">
+            {{ product.price | currency: "MXN" : "symbol-narrow" : "1.2-2" }}
+          </div>
         </mat-card-content>
       </mat-card>
       <p *ngIf="filteredProducts.length === 0" class="no-products">
         No se encontraron productos
       </p>
     </div>
-
   </div>
 
   <!-- Right panel: Order type + Cart -->
   <div class="order-panel">
-
     <!-- Order type selector -->
     <mat-card class="order-type-card">
       <mat-card-header>
@@ -55,7 +60,6 @@
       </mat-card-header>
       <mat-card-content>
         <form [formGroup]="orderForm">
-
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Tipo</mat-label>
             <mat-select formControlName="type">
@@ -69,22 +73,25 @@
           <mat-form-field
             appearance="outline"
             class="full-width"
-            *ngIf="orderForm.get('type')?.value === OrderType.DineIn">
+            *ngIf="orderForm.get('type')?.value === OrderType.DineIn"
+          >
             <mat-label>Mesa</mat-label>
             <mat-select formControlName="tableId">
               <mat-option *ngFor="let t of tables" [value]="t.id">
-                Mesa {{ t.number }} (cap. {{ t.capacity }})
+                {{ t.name }}
               </mat-option>
             </mat-select>
             <mat-error>Selecciona una mesa</mat-error>
           </mat-form-field>
 
           <!-- Delivery: platform selector + external reference -->
-          <ng-container *ngIf="orderForm.get('type')?.value === OrderType.Delivery">
+          <ng-container
+            *ngIf="orderForm.get('type')?.value === OrderType.Platform"
+          >
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Plataforma</mat-label>
-              <mat-select formControlName="platformId">
-                <mat-option *ngFor="let p of platforms" [value]="p.id">
+              <mat-select formControlName="platformName">
+                <mat-option *ngFor="let p of platforms" [value]="p.name">
                   {{ p.name }}
                 </mat-option>
               </mat-select>
@@ -93,11 +100,14 @@
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Referencia externa (opcional)</mat-label>
-              <input matInput formControlName="externalReference" placeholder="Ej. #12345">
+              <input
+                matInput
+                formControlName="externalReference"
+                placeholder="Ej. #12345"
+              />
               <mat-icon matSuffix>tag</mat-icon>
             </mat-form-field>
           </ng-container>
-
         </form>
       </mat-card-content>
     </mat-card>
@@ -108,7 +118,9 @@
         <mat-card-title>
           <mat-icon>shopping_cart</mat-icon>
           Carrito
-          <span *ngIf="cartItems.length > 0" class="cart-count">({{ cartItems.length }})</span>
+          <span *ngIf="cartItems.length > 0" class="cart-count"
+            >({{ cartItems.length }})</span
+          >
         </mat-card-title>
       </mat-card-header>
 
@@ -124,23 +136,43 @@
         <div *ngFor="let item of cartItems" class="cart-item">
           <div class="item-header">
             <span class="item-name">{{ item.productName }}</span>
-            <span class="item-price">{{ item.unitPrice * item.quantity | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+            <span class="item-price">{{
+              item.unitPrice * item.quantity
+                | currency: "MXN" : "symbol-narrow" : "1.2-2"
+            }}</span>
           </div>
           <div class="item-controls">
-            <button mat-icon-button (click)="decrementItem(item)" aria-label="Reducir cantidad">
+            <button
+              mat-icon-button
+              (click)="decrementItem(item)"
+              aria-label="Reducir cantidad"
+            >
               <mat-icon>remove</mat-icon>
             </button>
             <span class="item-qty">{{ item.quantity }}</span>
-            <button mat-icon-button (click)="incrementItem(item)" aria-label="Aumentar cantidad">
+            <button
+              mat-icon-button
+              (click)="incrementItem(item)"
+              aria-label="Aumentar cantidad"
+            >
               <mat-icon>add</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="removeItem(item)" aria-label="Eliminar">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeItem(item)"
+              aria-label="Eliminar"
+            >
               <mat-icon>delete</mat-icon>
             </button>
           </div>
           <mat-form-field appearance="outline" class="item-notes full-width">
             <mat-label>Nota</mat-label>
-            <input matInput [(ngModel)]="item.notes" placeholder="Notas especiales...">
+            <input
+              matInput
+              [(ngModel)]="item.notes"
+              placeholder="Notas especiales..."
+            />
           </mat-form-field>
           <mat-divider></mat-divider>
         </div>
@@ -149,11 +181,18 @@
         <div class="cart-totals" *ngIf="cartItems.length > 0">
           <div class="total-row">
             <span>Subtotal</span>
-            <span>{{ subtotal | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+            <span>{{
+              subtotal | currency: "MXN" : "symbol-narrow" : "1.2-2"
+            }}</span>
           </div>
-          <div class="total-row total-bold" *ngIf="activeOrder; else pendingTotal">
+          <div
+            class="total-row total-bold"
+            *ngIf="activeOrder; else pendingTotal"
+          >
             <span>Total (con impuestos)</span>
-            <span>{{ activeOrder.total | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+            <span>{{
+              activeOrder.total | currency: "MXN" : "symbol-narrow" : "1.2-2"
+            }}</span>
           </div>
           <ng-template #pendingTotal>
             <div class="total-row hint-row">
@@ -168,27 +207,31 @@
           mat-raised-button
           color="primary"
           [disabled]="saving || orderForm.invalid || cartItems.length === 0"
-          (click)="save()">
+          (click)="save()"
+        >
           <mat-icon>save</mat-icon>
-          {{ saving ? 'Guardando...' : 'Guardar' }}
+          {{ saving ? "Guardando..." : "Guardar" }}
         </button>
         <button
           mat-raised-button
           color="accent"
           [disabled]="!activeOrder || sendingToKitchen"
-          (click)="sendToKitchen()">
+          (click)="sendToKitchen()"
+        >
           <mat-icon>send</mat-icon>
-          {{ sendingToKitchen ? 'Enviando...' : 'Enviar a cocina' }}
+          {{ sendingToKitchen ? "Enviando..." : "Enviar a cocina" }}
         </button>
       </mat-card-actions>
     </mat-card>
-
   </div>
 </div>
 
 <ng-template #loadingTpl>
   <div class="loading-container">
-    <mat-progress-spinner mode="indeterminate" diameter="56"></mat-progress-spinner>
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="56"
+    ></mat-progress-spinner>
     <p>Cargando...</p>
   </div>
 </ng-template>

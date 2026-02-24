@@ -1,51 +1,65 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Editar producto' : 'Agregar producto' }}</h2>
+<h2 mat-dialog-title>{{ isEdit ? "Editar producto" : "Agregar producto" }}</h2>
 
 <mat-dialog-content [formGroup]="form">
-
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Nombre</mat-label>
-    <input matInput formControlName="name" placeholder="Ej. Shawarma de pollo">
-    <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
-    <mat-error *ngIf="form.get('name')?.hasError('maxlength')">Máximo 100 caracteres</mat-error>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Descripción (opcional)</mat-label>
-    <textarea matInput formControlName="description" rows="2" placeholder="Breve descripción del producto"></textarea>
+    <input
+      matInput
+      formControlName="name"
+      placeholder="Ej. Shawarma de pollo"
+    />
+    <mat-error *ngIf="form.get('name')?.hasError('required')"
+      >El nombre es requerido</mat-error
+    >
+    <mat-error *ngIf="form.get('name')?.hasError('maxlength')"
+      >Máximo 200 caracteres</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Precio</mat-label>
-    <input matInput type="number" min="0" formControlName="price" placeholder="0.00">
+    <input
+      matInput
+      type="number"
+      min="0.01"
+      formControlName="price"
+      placeholder="0.00"
+    />
     <mat-icon matSuffix>attach_money</mat-icon>
-    <mat-error *ngIf="form.get('price')?.hasError('required')">El precio es requerido</mat-error>
-    <mat-error *ngIf="form.get('price')?.hasError('min')">El precio debe ser mayor o igual a 0</mat-error>
+    <mat-error *ngIf="form.get('price')?.hasError('required')"
+      >El precio es requerido</mat-error
+    >
+    <mat-error *ngIf="form.get('price')?.hasError('min')"
+      >El precio debe ser mayor a 0</mat-error
+    >
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Categoría</mat-label>
     <mat-select formControlName="categoryId">
-      <mat-option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</mat-option>
+      <mat-option *ngFor="let c of categories" [value]="c.id">{{
+        c.name
+      }}</mat-option>
     </mat-select>
-    <mat-error *ngIf="form.get('categoryId')?.hasError('required')">La categoría es requerida</mat-error>
+    <mat-error *ngIf="form.get('categoryId')?.hasError('required')"
+      >La categoría es requerida</mat-error
+    >
   </mat-form-field>
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>URL de imagen (opcional)</mat-label>
-    <input matInput formControlName="imageUrl" placeholder="https://...">
-    <mat-icon matSuffix>image</mat-icon>
-  </mat-form-field>
-
-  <div class="available-toggle">
-    <mat-checkbox formControlName="isAvailable">Disponible</mat-checkbox>
+  <div class="available-toggle" *ngIf="isEdit">
+    <mat-checkbox formControlName="isActive">Activo</mat-checkbox>
   </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="confirm()" [disabled]="form.invalid">
-    <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
-    {{ isEdit ? 'Guardar cambios' : 'Agregar' }}
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="confirm()"
+    [disabled]="form.invalid"
+  >
+    <mat-icon>{{ isEdit ? "save" : "add" }}</mat-icon>
+    {{ isEdit ? "Guardar cambios" : "Agregar" }}
   </button>
 </mat-dialog-actions>

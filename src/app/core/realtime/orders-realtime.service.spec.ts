@@ -1,10 +1,19 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import * as signalR from '@microsoft/signalr';
-import { OrdersRealtimeService, HUB_CONNECTION_FACTORY } from './orders-realtime.service';
+import {
+  OrdersRealtimeService,
+  HUB_CONNECTION_FACTORY,
+} from './orders-realtime.service';
 import { AuthService } from '../auth/auth.service';
 import { AuthStateService } from '../auth/auth-state.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { OrderDto, UserDto, OrderStatus, OrderType, PaymentStatus } from '../../shared/models';
+import {
+  OrderDto,
+  UserDto,
+  OrderStatus,
+  OrderType,
+  PaymentStatus,
+} from '../../shared/models';
 
 // ---------------------------------------------------------------------------
 // Minimal stub for HubConnection
@@ -34,7 +43,12 @@ describe('OrdersRealtimeService', () => {
   let capturedUrl: string;
   let capturedOptions: signalR.IHttpConnectionOptions;
 
-  const mockUser: UserDto = { id: '1', username: 'admin', email: 'admin@test.com', role: 'Admin' };
+  const mockUser: UserDto = {
+    id: '1',
+    name: 'admin',
+    email: 'admin@test.com',
+    role: 'Admin',
+  };
 
   beforeEach(() => {
     hubStub = new HubConnectionStub();
@@ -48,9 +62,9 @@ describe('OrdersRealtimeService', () => {
             capturedUrl = url;
             capturedOptions = options;
             return hubStub;
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     service = TestBed.inject(OrdersRealtimeService);
@@ -133,14 +147,15 @@ describe('OrdersRealtimeService', () => {
     const mockOrder: OrderDto = {
       id: 'order-guid-42',
       type: OrderType.DineIn,
-      status: OrderStatus.Pending,
+      status: OrderStatus.Draft,
       paymentStatus: PaymentStatus.Unpaid,
       items: [],
       subtotal: 0,
+      discount: 0,
       tax: 0,
       total: 0,
       createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-01T00:00:00Z'
+      updatedAt: '2024-01-01T00:00:00Z',
     };
 
     const events: Array<[string, keyof OrdersRealtimeService]> = [
@@ -149,7 +164,7 @@ describe('OrdersRealtimeService', () => {
       ['orderStatusChanged', 'orderStatusChanged$'],
       ['orderPaid', 'orderPaid$'],
       ['orderCancelled', 'orderCancelled$'],
-      ['orderTypeChanged', 'orderTypeChanged$']
+      ['orderTypeChanged', 'orderTypeChanged$'],
     ];
 
     events.forEach(([hubEvent, observable]) => {
@@ -158,7 +173,9 @@ describe('OrdersRealtimeService', () => {
         tick();
 
         let emitted: OrderDto | undefined;
-        (service[observable] as import('rxjs').Observable<OrderDto>).subscribe(v => (emitted = v));
+        (service[observable] as import('rxjs').Observable<OrderDto>).subscribe(
+          (v) => (emitted = v),
+        );
 
         hubStub.trigger(hubEvent, mockOrder);
         expect(emitted).toEqual(mockOrder);

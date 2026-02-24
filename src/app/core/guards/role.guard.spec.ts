@@ -14,7 +14,10 @@ describe('RoleGuard', () => {
   };
 
   const makeUser = (role: string): UserDto => ({
-    id: '1', username: 'test', email: 'test@test.com', role
+    id: '1',
+    name: 'test',
+    email: 'test@test.com',
+    role,
   });
 
   beforeEach(() => {
@@ -25,8 +28,8 @@ describe('RoleGuard', () => {
       providers: [
         RoleGuard,
         { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router }
-      ]
+        { provide: Router, useValue: router },
+      ],
     });
     guard = TestBed.inject(RoleGuard);
   });

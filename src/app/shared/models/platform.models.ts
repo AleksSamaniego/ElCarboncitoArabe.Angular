@@ -1,10 +1,16 @@
 export interface PlatformDto {
   id: string;
   name: string;
-  commissionRate: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
 }
 
 export interface CreatePlatformRequest {
   name: string;
-  commissionRate: number;
+}
+
+export interface UpdatePlatformRequest {
+  name: string;
+  isActive: boolean;
 }

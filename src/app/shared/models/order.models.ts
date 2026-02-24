@@ -1,6 +1,6 @@
 import { OrderType, OrderStatus, PaymentMethod, PaymentStatus } from './enums';
 
-export interface OrderItemUpsertDto {
+export interface UpdateOrderItemRequest {
   productId: string;
   quantity: number;
   notes?: string;
@@ -9,50 +9,51 @@ export interface OrderItemUpsertDto {
 export interface CreateOrderRequest {
   type: OrderType;
   tableId?: string;
-  platformId?: string;
+  platformName?: string;
   externalReference?: string;
-  items: OrderItemUpsertDto[];
+  notes?: string;
 }
 
 export interface UpdateOrderRequest {
-  type: OrderType;
-  tableId?: string;
-  platformId?: string;
-  externalReference?: string;
-  items: OrderItemUpsertDto[];
+  notes?: string;
+  items?: UpdateOrderItemRequest[];
 }
 
 export interface CheckoutRequest {
-  orderId: string;
   paymentMethod: PaymentMethod;
-  discount?: number;
-  tax?: number;
+  discount: number;
+  tax: number;
+  paymentNotes?: string;
 }
 
 export interface OrderItemDto {
+  id: string;
   productId: string;
-  productName: string;
+  productNameSnapshot: string;
+  unitPriceSnapshot: number;
   quantity: number;
-  unitPrice: number;
-  subtotal: number;
   notes?: string;
+  total: number;
 }
 
 export interface OrderDto {
   id: string;
   type: OrderType;
   status: OrderStatus;
-  paymentMethod?: PaymentMethod;
   paymentStatus: PaymentStatus;
+  paymentMethod?: PaymentMethod;
   tableId?: string;
-  tableNumber?: number;
-  platformId?: string;
   platformName?: string;
   externalReference?: string;
+  notes?: string;
   items: OrderItemDto[];
   subtotal: number;
+  discount: number;
   tax: number;
   total: number;
+  paymentNotes?: string;
+  paidAt?: string | null;
+  paidByUserId?: string | null;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string | null;
 }

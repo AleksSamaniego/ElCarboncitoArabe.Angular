@@ -1,12 +1,31 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { TablesApiService } from './tables-api.service';
 import { AppConfigService } from '../config/app-config.service';
-import { TableDto, CreateTableRequest, UpdateTableRequest } from '../../shared/models';
+import {
+  TableDto,
+  CreateTableRequest,
+  UpdateTableRequest,
+} from '../../shared/models';
 
 const MOCK_TABLES: TableDto[] = [
-  { id: 'guid-1', number: 1, capacity: 4, isAvailable: true },
-  { id: 'guid-2', number: 2, capacity: 2, isAvailable: false }
+  {
+    id: 'guid-1',
+    name: 'Mesa 1',
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: null,
+  },
+  {
+    id: 'guid-2',
+    name: 'Mesa 2',
+    isActive: false,
+    createdAt: '2024-01-02T00:00:00Z',
+    updatedAt: null,
+  },
 ];
 
 describe('TablesApiService', () => {
@@ -16,7 +35,7 @@ describe('TablesApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(TablesApiService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -33,7 +52,7 @@ describe('TablesApiService', () => {
 
   describe('getTables', () => {
     it('should GET the tables endpoint and return tables', () => {
-      service.getTables().subscribe(tables => {
+      service.getTables().subscribe((tables) => {
         expect(tables).toEqual(MOCK_TABLES);
       });
 
@@ -46,7 +65,7 @@ describe('TablesApiService', () => {
   describe('getTable', () => {
     it('should GET tables/:id and return the table', () => {
       const id = 'abc-123';
-      service.getTable(id).subscribe(table => {
+      service.getTable(id).subscribe((table) => {
         expect(table).toEqual(MOCK_TABLES[0]);
       });
 
@@ -58,10 +77,16 @@ describe('TablesApiService', () => {
 
   describe('createTable', () => {
     it('should POST to tables and return the created table', () => {
-      const payload: CreateTableRequest = { number: 3, capacity: 6 };
-      const created: TableDto = { id: 'guid-3', isAvailable: true, ...payload };
+      const payload: CreateTableRequest = { name: 'Mesa 3' };
+      const created: TableDto = {
+        id: 'guid-3',
+        name: payload.name,
+        isActive: true,
+        createdAt: '2024-01-03T00:00:00Z',
+        updatedAt: null,
+      };
 
-      service.createTable(payload).subscribe(table => {
+      service.createTable(payload).subscribe((table) => {
         expect(table).toEqual(created);
       });
 
@@ -75,10 +100,16 @@ describe('TablesApiService', () => {
   describe('updateTable', () => {
     it('should PUT to tables/:id and return the updated table', () => {
       const id = 'abc-123';
-      const payload: UpdateTableRequest = { number: 1, capacity: 8, isAvailable: false };
-      const updated: TableDto = { id: 'guid-1', ...payload };
+      const payload: UpdateTableRequest = { name: 'Mesa 1', isActive: false };
+      const updated: TableDto = {
+        id: 'guid-1',
+        name: payload.name,
+        isActive: payload.isActive,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-04T00:00:00Z',
+      };
 
-      service.updateTable(id, payload).subscribe(table => {
+      service.updateTable(id, payload).subscribe((table) => {
         expect(table).toEqual(updated);
       });
 

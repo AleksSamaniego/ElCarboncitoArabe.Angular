@@ -3,16 +3,25 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 
-import { OrdersApiService, ChangeTypeRequest } from '../../../core/api/orders-api.service';
+import {
+  OrdersApiService,
+  ChangeTypeRequest,
+} from '../../../core/api/orders-api.service';
 import { OrdersRealtimeService } from '../../../core/realtime/orders-realtime.service';
-import { CheckoutRequest, OrderDto, OrderStatus, OrderType, PaymentStatus } from '../../../shared/models';
+import {
+  CheckoutRequest,
+  OrderDto,
+  OrderStatus,
+  OrderType,
+  PaymentStatus,
+} from '../../../shared/models';
 import { CheckoutDialogComponent } from '../dialogs/checkout-dialog/checkout-dialog.component';
 import { ChangeTypeDialogComponent } from '../dialogs/change-type-dialog/change-type-dialog.component';
 
 @Component({
   selector: 'app-active-orders',
   templateUrl: './active-orders.component.html',
-  styleUrl: './active-orders.component.scss'
+  styleUrl: './active-orders.component.scss',
 })
 export class ActiveOrdersComponent implements OnInit, OnDestroy {
   readonly OrderStatus = OrderStatus;
@@ -23,26 +32,36 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   loading = false;
   processingIds = new Set<string>();
 
-  readonly displayedColumns = ['id', 'type', 'location', 'status', 'total', 'paymentStatus', 'actions'];
+  readonly displayedColumns = [
+    'id',
+    'type',
+    'location',
+    'status',
+    'total',
+    'paymentStatus',
+    'actions',
+  ];
 
   readonly orderTypeLabel: Record<OrderType, string> = {
     [OrderType.DineIn]: 'Comer aquí',
-    [OrderType.TakeAway]: 'Para llevar',
-    [OrderType.Delivery]: 'Plataforma'
+    [OrderType.Takeaway]: 'Para llevar',
+    [OrderType.Platform]: 'Plataforma',
   };
 
   readonly orderStatusLabel: Record<OrderStatus, string> = {
-    [OrderStatus.Pending]: 'Pendiente',
+    [OrderStatus.Draft]: 'Borrador',
+    [OrderStatus.SentToKitchen]: 'Enviado a cocina',
+    [OrderStatus.Received]: 'Recibido',
     [OrderStatus.InProgress]: 'En progreso',
     [OrderStatus.Ready]: 'Listo',
     [OrderStatus.Delivered]: 'Entregado',
-    [OrderStatus.Cancelled]: 'Cancelado'
+    [OrderStatus.Cancelled]: 'Cancelado',
+    [OrderStatus.Paid]: 'Pagado',
   };
 
   readonly paymentStatusLabel: Record<PaymentStatus, string> = {
     [PaymentStatus.Unpaid]: 'Sin cobrar',
     [PaymentStatus.Paid]: 'Cobrado',
-    [PaymentStatus.Refunded]: 'Reembolsado'
   };
 
   private readonly destroy$ = new Subject<void>();
@@ -50,7 +69,7 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   constructor(
     private readonly ordersApi: OrdersApiService,
     private readonly realtime: OrdersRealtimeService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -60,21 +79,26 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
 
   private loadOrders(): void {
     this.loading = true;
-    this.ordersApi.getActiveOrders()
+    this.ordersApi
+      .getActiveOrders()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (orders) => {
-          this.orders = orders.filter(o => o.status !== OrderStatus.Cancelled);
+          this.orders = orders.filter(
+            (o) => o.status !== OrderStatus.Cancelled,
+          );
           this.loading = false;
         },
-        error: () => { this.loading = false; }
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 
   private subscribeToRealtime(): void {
     this.realtime.orderCreated$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => {
+      .subscribe((order) => {
         if (order.status !== OrderStatus.Cancelled) {
           this.upsertOrder(order);
         }
@@ -82,11 +106,11 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
 
     this.realtime.orderUpdated$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.upsertOrder(order));
+      .subscribe((order) => this.upsertOrder(order));
 
     this.realtime.orderStatusChanged$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => {
+      .subscribe((order) => {
         if (order.status === OrderStatus.Cancelled) {
           this.removeOrder(order.id);
         } else {
@@ -96,24 +120,24 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
 
     this.realtime.orderPaid$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.upsertOrder(order));
+      .subscribe((order) => this.upsertOrder(order));
 
     this.realtime.orderCancelled$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.removeOrder(order.id));
+      .subscribe((order) => this.removeOrder(order.id));
 
     this.realtime.orderTypeChanged$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(order => this.upsertOrder(order));
+      .subscribe((order) => this.upsertOrder(order));
   }
 
   private upsertOrder(order: OrderDto): void {
-    const idx = this.orders.findIndex(o => o.id === order.id);
+    const idx = this.orders.findIndex((o) => o.id === order.id);
     if (idx >= 0) {
       this.orders = [
         ...this.orders.slice(0, idx),
         order,
-        ...this.orders.slice(idx + 1)
+        ...this.orders.slice(idx + 1),
       ];
     } else {
       this.orders = [...this.orders, order];
@@ -121,25 +145,26 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   }
 
   private removeOrder(id: string): void {
-    this.orders = this.orders.filter(o => o.id !== id);
+    this.orders = this.orders.filter((o) => o.id !== id);
   }
 
   openCheckout(order: OrderDto): void {
     const ref = this.dialog.open(CheckoutDialogComponent, {
       width: '400px',
-      data: { order }
+      data: { order },
     });
     ref.afterClosed().subscribe((req: CheckoutRequest | undefined) => {
       if (!req) return;
       this.processingIds.add(order.id);
-      this.ordersApi.checkout(order.id, req)
+      this.ordersApi
+        .checkout(order.id, req)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (updated) => {
             this.upsertOrder(updated);
             this.processingIds.delete(order.id);
           },
-          error: () => this.processingIds.delete(order.id)
+          error: () => this.processingIds.delete(order.id),
         });
     });
   }
@@ -147,19 +172,20 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   openChangeType(order: OrderDto): void {
     const ref = this.dialog.open(ChangeTypeDialogComponent, {
       width: '380px',
-      data: { order }
+      data: { order },
     });
     ref.afterClosed().subscribe((req: ChangeTypeRequest | undefined) => {
       if (!req) return;
       this.processingIds.add(order.id);
-      this.ordersApi.changeType(order.id, req)
+      this.ordersApi
+        .changeType(order.id, req)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (updated) => {
             this.upsertOrder(updated);
             this.processingIds.delete(order.id);
           },
-          error: () => this.processingIds.delete(order.id)
+          error: () => this.processingIds.delete(order.id),
         });
     });
   }
@@ -167,14 +193,15 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   cancelOrder(order: OrderDto): void {
     if (!confirm(`¿Cancelar pedido #${order.id}?`)) return;
     this.processingIds.add(order.id);
-    this.ordersApi.cancelOrder(order.id)
+    this.ordersApi
+      .cancelOrder(order.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.removeOrder(order.id);
           this.processingIds.delete(order.id);
         },
-        error: () => this.processingIds.delete(order.id)
+        error: () => this.processingIds.delete(order.id),
       });
   }
 
@@ -192,6 +219,18 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
 
   getPaymentLabel(status: PaymentStatus): string {
     return this.paymentStatusLabel[status];
+  }
+
+  getTypeClass(type: OrderType): string {
+    return OrderType[type].toLowerCase();
+  }
+
+  getStatusClass(status: OrderStatus): string {
+    return OrderStatus[status].toLowerCase();
+  }
+
+  getPaymentStatusClass(status: PaymentStatus): string {
+    return PaymentStatus[status].toLowerCase();
   }
 
   ngOnDestroy(): void {

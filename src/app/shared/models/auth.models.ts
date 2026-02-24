@@ -5,13 +5,12 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
-  refreshToken: string;
-  expiresIn: number;
+  user: UserDto;
 }
 
 export interface UserDto {
   id: string;
-  username: string;
+  name: string;
   email: string;
   role: string;
 }

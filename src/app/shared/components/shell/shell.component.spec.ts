@@ -22,16 +22,28 @@ describe('ShellComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let breakpointObserver: jasmine.SpyObj<BreakpointObserver>;
 
-  const mockUser: UserDto = { id: '1', username: 'owner', email: 'owner@test.com', role: 'Owner' };
+  const mockUser: UserDto = {
+    id: '1',
+    name: 'owner',
+    email: 'owner@test.com',
+    role: 'Owner',
+  };
 
   beforeEach(async () => {
-    authService = jasmine.createSpyObj('AuthService', ['getCurrentUser', 'logout']);
+    authService = jasmine.createSpyObj('AuthService', [
+      'getCurrentUser',
+      'logout',
+    ]);
     authState = jasmine.createSpyObj('AuthStateService', ['setCurrentUser'], {
-      currentUser$: of(mockUser)
+      currentUser$: of(mockUser),
     });
     router = jasmine.createSpyObj('Router', ['navigate']);
-    breakpointObserver = jasmine.createSpyObj('BreakpointObserver', ['observe']);
-    breakpointObserver.observe.and.returnValue(of({ matches: false, breakpoints: {} }));
+    breakpointObserver = jasmine.createSpyObj('BreakpointObserver', [
+      'observe',
+    ]);
+    breakpointObserver.observe.and.returnValue(
+      of({ matches: false, breakpoints: {} }),
+    );
 
     authService.getCurrentUser.and.returnValue(mockUser);
 
@@ -46,14 +58,14 @@ describe('ShellComponent', () => {
         MatListModule,
         MatIconModule,
         MatButtonModule,
-        MatTooltipModule
+        MatTooltipModule,
       ],
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: AuthStateService, useValue: authState },
         { provide: Router, useValue: router },
-        { provide: BreakpointObserver, useValue: breakpointObserver }
-      ]
+        { provide: BreakpointObserver, useValue: breakpointObserver },
+      ],
     }).compileComponents();
   });
 
@@ -83,12 +95,22 @@ describe('ShellComponent', () => {
     });
 
     it('should return true when user role matches', () => {
-      const user: UserDto = { id: '1', username: 'waiter', email: '', role: 'Waiter' };
+      const user: UserDto = {
+        id: '1',
+        name: 'waiter',
+        email: '',
+        role: 'Waiter',
+      };
       expect(component.hasRole(user, 'Waiter', 'Owner')).toBeTrue();
     });
 
     it('should return false when user role does not match', () => {
-      const user: UserDto = { id: '1', username: 'waiter', email: '', role: 'Waiter' };
+      const user: UserDto = {
+        id: '1',
+        name: 'waiter',
+        email: '',
+        role: 'Waiter',
+      };
       expect(component.hasRole(user, 'Kitchen', 'Owner')).toBeFalse();
     });
 

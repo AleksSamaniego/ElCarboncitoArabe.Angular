@@ -19,7 +19,10 @@ describe('LoginComponent', () => {
   let router: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    authService = jasmine.createSpyObj('AuthService', ['login', 'getCurrentUser']);
+    authService = jasmine.createSpyObj('AuthService', [
+      'login',
+      'getCurrentUser',
+    ]);
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
@@ -33,12 +36,12 @@ describe('LoginComponent', () => {
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
       ],
       providers: [
         { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router }
-      ]
+        { provide: Router, useValue: router },
+      ],
     }).compileComponents();
   });
 
@@ -59,21 +62,39 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to /waiter for Waiter role after login', () => {
-    authService.login.and.returnValue(of({ accessToken: 'token', refreshToken: 'rt', expiresIn: 3600 }));
-    const user: UserDto = { id: '1', username: 'waiter', email: '', role: 'Waiter' };
+    authService.login.and.returnValue(
+      of({
+        token: 'token',
+        user: { id: '1', name: 'waiter', email: '', role: 'Waiter' },
+      }),
+    );
+    const user: UserDto = {
+      id: '1',
+      name: 'waiter',
+      email: '',
+      role: 'Waiter',
+    };
     authService.getCurrentUser.and.returnValue(user);
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
-    component.loginForm.setValue({ email: 'waiter@test.com', password: 'pass' });
+    component.loginForm.setValue({
+      email: 'waiter@test.com',
+      password: 'pass',
+    });
     component.onSubmit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/waiter']);
   });
 
   it('should navigate to /kitchen for Kitchen role after login', () => {
-    authService.login.and.returnValue(of({ accessToken: 'token', refreshToken: 'rt', expiresIn: 3600 }));
-    const user: UserDto = { id: '2', username: 'cook', email: '', role: 'Kitchen' };
+    authService.login.and.returnValue(
+      of({
+        token: 'token',
+        user: { id: '2', name: 'cook', email: '', role: 'Kitchen' },
+      }),
+    );
+    const user: UserDto = { id: '2', name: 'cook', email: '', role: 'Kitchen' };
     authService.getCurrentUser.and.returnValue(user);
 
     const fixture = TestBed.createComponent(LoginComponent);
@@ -85,8 +106,13 @@ describe('LoginComponent', () => {
   });
 
   it('should navigate to /admin for Owner role after login', () => {
-    authService.login.and.returnValue(of({ accessToken: 'token', refreshToken: 'rt', expiresIn: 3600 }));
-    const user: UserDto = { id: '3', username: 'admin', email: '', role: 'Owner' };
+    authService.login.and.returnValue(
+      of({
+        token: 'token',
+        user: { id: '3', name: 'admin', email: '', role: 'Owner' },
+      }),
+    );
+    const user: UserDto = { id: '3', name: 'admin', email: '', role: 'Owner' };
     authService.getCurrentUser.and.returnValue(user);
 
     const fixture = TestBed.createComponent(LoginComponent);
@@ -98,7 +124,9 @@ describe('LoginComponent', () => {
   });
 
   it('should set error message on failed login', () => {
-    authService.login.and.returnValue(throwError(() => new Error('Unauthorized')));
+    authService.login.and.returnValue(
+      throwError(() => new Error('Unauthorized')),
+    );
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;

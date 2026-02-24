@@ -19,21 +19,31 @@ describe('AuthStateService', () => {
   });
 
   it('should emit null on currentUser$ initially', (done) => {
-    service.currentUser$.subscribe(user => {
+    service.currentUser$.subscribe((user) => {
       expect(user).toBeNull();
       done();
     });
   });
 
   it('should update currentUser when setCurrentUser is called', () => {
-    const user: UserDto = { id: '1', username: 'admin', email: 'admin@test.com', role: 'Admin' };
+    const user: UserDto = {
+      id: '1',
+      name: 'admin',
+      email: 'admin@test.com',
+      role: 'Admin',
+    };
     service.setCurrentUser(user);
     expect(service.currentUser).toEqual(user);
   });
 
   it('should emit the new user on currentUser$ after setCurrentUser', (done) => {
-    const user: UserDto = { id: '2', username: 'waiter', email: 'waiter@test.com', role: 'Waiter' };
-    service.currentUser$.subscribe(emitted => {
+    const user: UserDto = {
+      id: '2',
+      name: 'waiter',
+      email: 'waiter@test.com',
+      role: 'Waiter',
+    };
+    service.currentUser$.subscribe((emitted) => {
       if (emitted) {
         expect(emitted).toEqual(user);
         done();
@@ -43,7 +53,12 @@ describe('AuthStateService', () => {
   });
 
   it('should clear currentUser when setCurrentUser(null) is called', () => {
-    const user: UserDto = { id: '1', username: 'admin', email: 'admin@test.com', role: 'Admin' };
+    const user: UserDto = {
+      id: '1',
+      name: 'admin',
+      email: 'admin@test.com',
+      role: 'Admin',
+    };
     service.setCurrentUser(user);
     service.setCurrentUser(null);
     expect(service.currentUser).toBeNull();

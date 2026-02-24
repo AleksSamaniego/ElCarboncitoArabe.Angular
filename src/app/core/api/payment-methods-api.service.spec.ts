@@ -1,13 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { PaymentMethodsApiService } from './payment-methods-api.service';
 import { AppConfigService } from '../config/app-config.service';
 import { PaymentMethodDto } from '../../shared/models';
 
 const MOCK_PAYMENT_METHODS: PaymentMethodDto[] = [
-  { id: 'cash', name: 'Cash' },
-  { id: 'card', name: 'Card' },
-  { id: 'transfer', name: 'Transfer' }
+  { value: 0, name: 'Cash' },
+  { value: 1, name: 'Card' },
+  { value: 2, name: 'Transfer' },
 ];
 
 describe('PaymentMethodsApiService', () => {
@@ -17,7 +20,7 @@ describe('PaymentMethodsApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(PaymentMethodsApiService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -34,7 +37,7 @@ describe('PaymentMethodsApiService', () => {
 
   describe('getPaymentMethods', () => {
     it('should GET payment-methods and return payment methods', () => {
-      service.getPaymentMethods().subscribe(methods => {
+      service.getPaymentMethods().subscribe((methods) => {
         expect(methods).toEqual(MOCK_PAYMENT_METHODS);
       });
 

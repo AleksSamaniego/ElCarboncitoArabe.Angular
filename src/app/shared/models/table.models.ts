@@ -1,17 +1,16 @@
 export interface TableDto {
   id: string;
-  number: number;
-  capacity: number;
-  isAvailable: boolean;
+  name: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
 }
 
 export interface CreateTableRequest {
-  number: number;
-  capacity: number;
+  name: string;
 }
 
 export interface UpdateTableRequest {
-  number: number;
-  capacity: number;
-  isAvailable: boolean;
+  name: string;
+  isActive: boolean;
 }

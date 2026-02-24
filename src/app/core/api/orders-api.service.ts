@@ -9,22 +9,23 @@ import {
   UpdateOrderRequest,
   CheckoutRequest,
   OrderStatus,
-  OrderType
+  OrderType,
 } from '../../shared/models';
 
 export interface ChangeTypeRequest {
   type: OrderType;
   tableId?: string;
-  platformId?: string;
+  platformName?: string;
+  externalReference?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrdersApiService {
   constructor(
     private readonly http: HttpClient,
-    private readonly config: AppConfigService
+    private readonly config: AppConfigService,
   ) {}
 
   getActiveOrders(): Observable<OrderDto[]> {
@@ -57,7 +58,9 @@ export class OrdersApiService {
   }
 
   sendToKitchen(id: string): Observable<OrderDto> {
-    const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/send-to-kitchen`);
+    const url = this.config.buildApiUrl(
+      `${ApiRoutes.orders}/${id}/send-to-kitchen`,
+    );
     return this.http.post<OrderDto>(url, {});
   }
 
@@ -77,7 +80,9 @@ export class OrdersApiService {
   }
 
   changeType(id: string, req: ChangeTypeRequest): Observable<OrderDto> {
-    const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/change-type`);
+    const url = this.config.buildApiUrl(
+      `${ApiRoutes.orders}/${id}/change-type`,
+    );
     return this.http.post<OrderDto>(url, req);
   }
 }

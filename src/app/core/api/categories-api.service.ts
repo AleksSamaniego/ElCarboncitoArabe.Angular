@@ -3,15 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../config/app-config.service';
 import { ApiRoutes } from '../config/api-routes';
-import { CategoryDto, CreateCategoryRequest } from '../../shared/models';
+import {
+  CategoryDto,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '../../shared/models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoriesApiService {
   constructor(
     private readonly http: HttpClient,
-    private readonly config: AppConfigService
+    private readonly config: AppConfigService,
   ) {}
 
   getCategories(): Observable<CategoryDto[]> {
@@ -29,7 +33,10 @@ export class CategoriesApiService {
     return this.http.post<CategoryDto>(url, req);
   }
 
-  updateCategory(id: string, req: CreateCategoryRequest): Observable<CategoryDto> {
+  updateCategory(
+    id: string,
+    req: UpdateCategoryRequest,
+  ): Observable<CategoryDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.categories}/${id}`);
     return this.http.put<CategoryDto>(url, req);
   }

@@ -1,12 +1,33 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { CategoriesApiService } from './categories-api.service';
 import { AppConfigService } from '../config/app-config.service';
-import { CategoryDto, CreateCategoryRequest } from '../../shared/models';
+import {
+  CategoryDto,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '../../shared/models';
 
 const MOCK_CATEGORIES: CategoryDto[] = [
-  { id: 'guid-1', name: 'Entradas', description: 'Platos de entrada' },
-  { id: 'guid-2', name: 'Principales' }
+  {
+    id: 'guid-1',
+    name: 'Entradas',
+    sortOrder: 0,
+    isActive: true,
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: null,
+  },
+  {
+    id: 'guid-2',
+    name: 'Principales',
+    sortOrder: 1,
+    isActive: true,
+    createdAt: '2024-01-02T00:00:00Z',
+    updatedAt: null,
+  },
 ];
 
 describe('CategoriesApiService', () => {
@@ -16,7 +37,7 @@ describe('CategoriesApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
     });
     service = TestBed.inject(CategoriesApiService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -33,7 +54,7 @@ describe('CategoriesApiService', () => {
 
   describe('getCategories', () => {
     it('should GET the categories endpoint and return categories', () => {
-      service.getCategories().subscribe(categories => {
+      service.getCategories().subscribe((categories) => {
         expect(categories).toEqual(MOCK_CATEGORIES);
       });
 
@@ -46,7 +67,7 @@ describe('CategoriesApiService', () => {
   describe('getCategory', () => {
     it('should GET categories/:id and return the category', () => {
       const id = 'abc-123';
-      service.getCategory(id).subscribe(category => {
+      service.getCategory(id).subscribe((category) => {
         expect(category).toEqual(MOCK_CATEGORIES[0]);
       });
 
@@ -58,10 +79,17 @@ describe('CategoriesApiService', () => {
 
   describe('createCategory', () => {
     it('should POST to categories and return the created category', () => {
-      const payload: CreateCategoryRequest = { name: 'Postres', description: 'Postres árabes' };
-      const created: CategoryDto = { id: 'guid-3', ...payload };
+      const payload: CreateCategoryRequest = { name: 'Postres', sortOrder: 2 };
+      const created: CategoryDto = {
+        id: 'guid-3',
+        name: payload.name,
+        sortOrder: payload.sortOrder,
+        isActive: true,
+        createdAt: '2024-01-03T00:00:00Z',
+        updatedAt: null,
+      };
 
-      service.createCategory(payload).subscribe(category => {
+      service.createCategory(payload).subscribe((category) => {
         expect(category).toEqual(created);
       });
 
@@ -75,10 +103,21 @@ describe('CategoriesApiService', () => {
   describe('updateCategory', () => {
     it('should PUT to categories/:id and return the updated category', () => {
       const id = 'abc-123';
-      const payload: CreateCategoryRequest = { name: 'Entradas actualizado' };
-      const updated: CategoryDto = { id: 'guid-1', ...payload };
+      const payload: UpdateCategoryRequest = {
+        name: 'Entradas actualizado',
+        sortOrder: 0,
+        isActive: false,
+      };
+      const updated: CategoryDto = {
+        id: 'guid-1',
+        name: payload.name,
+        sortOrder: payload.sortOrder,
+        isActive: payload.isActive,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-04T00:00:00Z',
+      };
 
-      service.updateCategory(id, payload).subscribe(category => {
+      service.updateCategory(id, payload).subscribe((category) => {
         expect(category).toEqual(updated);
       });
 
