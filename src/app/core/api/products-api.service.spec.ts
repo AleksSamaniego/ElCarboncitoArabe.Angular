@@ -41,6 +41,34 @@ describe('ProductsApiService', () => {
       expect(req.request.method).toBe('GET');
       req.flush(MOCK_PRODUCTS);
     });
+
+    it('should GET products with optional query params', () => {
+      service.getProducts({ categoryId: 'cat-1', page: 1, pageSize: 10 }).subscribe(products => {
+        expect(products).toEqual(MOCK_PRODUCTS);
+      });
+
+      const req = httpMock.expectOne(r =>
+        r.url === config.buildApiUrl('products') &&
+        r.params.get('categoryId') === 'cat-1' &&
+        r.params.get('page') === '1' &&
+        r.params.get('pageSize') === '10'
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(MOCK_PRODUCTS);
+    });
+  });
+
+  describe('getProduct', () => {
+    it('should GET products/:id and return the product', () => {
+      const id = 'abc-123';
+      service.getProduct(id).subscribe(product => {
+        expect(product).toEqual(MOCK_PRODUCTS[0]);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl(`products/${id}`));
+      expect(req.request.method).toBe('GET');
+      req.flush(MOCK_PRODUCTS[0]);
+    });
   });
 
   describe('createProduct', () => {
@@ -82,6 +110,17 @@ describe('ProductsApiService', () => {
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(payload);
       req.flush(updated);
+    });
+  });
+
+  describe('deleteProduct', () => {
+    it('should DELETE products/:id', () => {
+      const id = 'abc-123';
+      service.deleteProduct(id).subscribe();
+
+      const req = httpMock.expectOne(config.buildApiUrl(`products/${id}`));
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null);
     });
   });
 });
