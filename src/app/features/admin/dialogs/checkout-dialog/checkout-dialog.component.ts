@@ -5,15 +5,18 @@ import {
   CheckoutRequest,
   OrderDto,
   PaymentMethod,
+  OrderStatus,
 } from '../../../../shared/models';
 
 export interface CheckoutDialogData {
   order: OrderDto;
+  orders?: OrderDto[]; // All unpaid orders from the same table
 }
 
 @Component({
   selector: 'app-checkout-dialog',
   templateUrl: './checkout-dialog.component.html',
+  styleUrl: './checkout-dialog.component.scss',
 })
 export class CheckoutDialogComponent {
   form: FormGroup;
@@ -22,6 +25,25 @@ export class CheckoutDialogComponent {
     { value: PaymentMethod.Card, label: 'Tarjeta' },
     { value: PaymentMethod.Transfer, label: 'Transferencia' },
   ];
+
+  get consolidatedOrders(): OrderDto[] {
+    return this.data.orders ?? [this.data.order];
+  }
+
+  get isConsolidated(): boolean {
+    return this.consolidatedOrders.length > 1;
+  }
+
+  get consolidatedTotal(): number {
+    return this.consolidatedOrders.reduce((sum, o) => sum + o.total, 0);
+  }
+
+  get consolidatedSubtotal(): number {
+    return this.consolidatedOrders.reduce(
+      (sum, o) => sum + (o.subtotal ?? o.total),
+      0,
+    );
+  }
 
   constructor(
     private readonly fb: FormBuilder,

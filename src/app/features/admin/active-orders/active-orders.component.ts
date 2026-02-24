@@ -103,7 +103,9 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (orders) => {
           this.orders = orders.filter(
-            (o) => o.status !== OrderStatus.Cancelled,
+            (o) =>
+              o.status !== OrderStatus.Cancelled &&
+              o.status !== OrderStatus.Paid,
           );
           this.loading = false;
         },
@@ -117,7 +119,10 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
     this.realtime.orderCreated$
       .pipe(takeUntil(this.destroy$))
       .subscribe((order) => {
-        if (order.status !== OrderStatus.Cancelled) {
+        if (
+          order.status !== OrderStatus.Cancelled &&
+          order.status !== OrderStatus.Paid
+        ) {
           this.upsertOrder(order);
         }
       });
@@ -129,7 +134,10 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
     this.realtime.orderStatusChanged$
       .pipe(takeUntil(this.destroy$))
       .subscribe((order) => {
-        if (order.status === OrderStatus.Cancelled) {
+        if (
+          order.status === OrderStatus.Cancelled ||
+          order.status === OrderStatus.Paid
+        ) {
           this.removeOrder(order.id);
         } else {
           this.upsertOrder(order);
@@ -167,23 +175,61 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   }
 
   openCheckout(order: OrderDto): void {
+    // Check if order is Delivered or if multiple unpaid orders exist for this table
+    let ordersToCheckout = [order];
+    if (
+      order.status === OrderStatus.Delivered &&
+      order.type === OrderType.DineIn &&
+      order.tableId
+    ) {
+      // Consolidate all unpaid orders from this table
+      ordersToCheckout = this.orders.filter(
+        (o) =>
+          o.tableId === order.tableId &&
+          o.status !== OrderStatus.Cancelled &&
+          o.status !== OrderStatus.Paid,
+      );
+    }
+
     const ref = this.dialog.open(CheckoutDialogComponent, {
       width: '400px',
-      data: { order },
+      data: {
+        order,
+        orders: ordersToCheckout.length > 1 ? ordersToCheckout : undefined,
+      },
     });
     ref.afterClosed().subscribe((req: CheckoutRequest | undefined) => {
       if (!req) return;
-      this.processingIds.add(order.id);
-      this.ordersApi
-        .checkout(order.id, req)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (updated) => {
-            this.upsertOrder(updated);
-            this.processingIds.delete(order.id);
-          },
-          error: () => this.processingIds.delete(order.id),
-        });
+
+      const isConsolidated = ordersToCheckout.length > 1;
+      if (isConsolidated && order.tableId) {
+        // Use table checkout endpoint for consolidation
+        this.processingIds.add(order.id);
+        this.ordersApi
+          .checkoutTable(order.tableId, req)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (result) => {
+              // Mark all consolidated orders as processed
+              ordersToCheckout.forEach((o) => this.removeOrder(o.id));
+              this.processingIds.delete(order.id);
+            },
+            error: () => this.processingIds.delete(order.id),
+          });
+      } else {
+        // Use single order checkout
+        this.processingIds.add(order.id);
+        this.ordersApi
+          .checkout(order.id, req)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (updated) => {
+              this.upsertOrder(updated);
+              this.processingIds.delete(order.id);
+            },
+            error: () => this.processingIds.delete(order.id),
+          });
+      }
     });
   }
 

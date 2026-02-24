@@ -225,7 +225,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe((order) => this.upsertActiveOrder(order));
     this.realtime.orderStatusChanged$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((order) => this.upsertActiveOrder(order));
+      .subscribe((order) => {
+        if (
+          order.status === OrderStatus.Cancelled ||
+          order.status === OrderStatus.Paid
+        ) {
+          this.removeActiveOrder(order.id);
+        } else {
+          this.upsertActiveOrder(order);
+        }
+      });
 
     this.realtime.orderPaid$
       .pipe(takeUntil(this.destroy$))

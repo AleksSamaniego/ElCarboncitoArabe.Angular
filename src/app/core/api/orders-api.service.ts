@@ -79,6 +79,13 @@ export class OrdersApiService {
     return this.http.post<OrderDto>(url, req);
   }
 
+  checkoutTable(tableId: string, req: CheckoutRequest): Observable<any> {
+    const url = this.config.buildApiUrl(
+      `${ApiRoutes.orders}/table/${tableId}/checkout`,
+    );
+    return this.http.post<any>(url, req);
+  }
+
   changeType(id: string, req: ChangeTypeRequest): Observable<OrderDto> {
     const url = this.config.buildApiUrl(
       `${ApiRoutes.orders}/${id}/change-type`,

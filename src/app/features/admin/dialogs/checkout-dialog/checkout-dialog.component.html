@@ -1,11 +1,24 @@
-<h2 mat-dialog-title>Cobrar Pedido #{{ data.order.id }}</h2>
+<h2 mat-dialog-title>
+  Cobrar Pedido #{{ data.order.id }}
+  <mat-chip *ngIf="isConsolidated" class="consolidation-chip">
+    {{ consolidatedOrders.length }} órdenes consolidadas
+  </mat-chip>
+</h2>
 
 <mat-dialog-content [formGroup]="form">
+  <div *ngIf="isConsolidated" class="consolidation-notice">
+    <mat-icon>merge_type</mat-icon>
+    <span
+      >Se consolidarán {{ consolidatedOrders.length }} órdenes de esta
+      mesa</span
+    >
+  </div>
+
   <div class="checkout-summary">
     <div class="summary-row">
       <span>Subtotal</span>
       <span>{{
-        data.order.subtotal | currency: "MXN" : "symbol-narrow" : "1.2-2"
+        consolidatedSubtotal | currency: "MXN" : "symbol-narrow" : "1.2-2"
       }}</span>
     </div>
     <div class="summary-row">
@@ -17,7 +30,7 @@
     <div class="summary-row total-row">
       <span>Total</span>
       <span>{{
-        data.order.total | currency: "MXN" : "symbol-narrow" : "1.2-2"
+        consolidatedTotal | currency: "MXN" : "symbol-narrow" : "1.2-2"
       }}</span>
     </div>
   </div>
