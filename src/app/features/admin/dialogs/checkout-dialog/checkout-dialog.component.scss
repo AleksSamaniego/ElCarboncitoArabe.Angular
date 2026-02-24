@@ -1,8 +1,13 @@
-.consolidation-chip {
-  margin-left: 8px;
-  background-color: #ff9800 !important;
-  color: white !important;
+.consolidation-badge {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 4px 8px;
+  background-color: #ff9800;
+  color: white;
   font-weight: 500;
+  font-size: 12px;
+  border-radius: 4px;
+  vertical-align: middle;
 }
 
 .consolidation-notice {

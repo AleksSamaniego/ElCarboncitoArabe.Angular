@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>
   Cobrar Pedido #{{ data.order.id }}
-  <mat-chip *ngIf="isConsolidated" class="consolidation-chip">
+  <span *ngIf="isConsolidated" class="consolidation-badge">
     {{ consolidatedOrders.length }} órdenes consolidadas
-  </mat-chip>
+  </span>
 </h2>
 
 <mat-dialog-content [formGroup]="form">

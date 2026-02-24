@@ -97,8 +97,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadTables();
-    this.loadOrders();
-    this.subscribeToRealtime();
   }
 
   private loadTables(): void {
@@ -109,10 +107,12 @@ export class BoardComponent implements OnInit, OnDestroy {
         next: (tables) => {
           this.tables = tables;
           this.buildTableMap(tables);
+          this.loadOrders(); // Load orders after tables are ready
         },
-        error: () => {
+        error: (err) => {
           this.tables = [];
           this.tableNameById.clear();
+          this.loadOrders(); // Still load orders even if tables fail
         },
       });
   }
@@ -125,12 +125,16 @@ export class BoardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (orders) => {
           this.orders = orders.filter(
-            (o) => o.status !== OrderStatus.Cancelled,
+            (o) =>
+              o.status !== OrderStatus.Cancelled &&
+              o.status !== OrderStatus.Delivered,
           );
           this.loading = false;
+          this.subscribeToRealtime(); // Subscribe after initial load
         },
         error: () => {
           this.loading = false;
+          this.subscribeToRealtime(); // Still subscribe even on error
         },
       });
   }
@@ -139,7 +143,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.realtime.orderCreated$
       .pipe(takeUntil(this.destroy$))
       .subscribe((order) => {
-        if (order.status !== OrderStatus.Cancelled) {
+        if (
+          order.status !== OrderStatus.Cancelled &&
+          order.status !== OrderStatus.Delivered
+        ) {
           this.upsertOrder(order);
         }
       });
@@ -151,7 +158,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.realtime.orderStatusChanged$
       .pipe(takeUntil(this.destroy$))
       .subscribe((order) => {
-        if (order.status === OrderStatus.Cancelled) {
+        if (
+          order.status === OrderStatus.Cancelled ||
+          order.status === OrderStatus.Delivered
+        ) {
           this.removeOrder(order.id);
         } else {
           this.upsertOrder(order);
