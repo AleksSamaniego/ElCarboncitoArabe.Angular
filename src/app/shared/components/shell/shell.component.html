@@ -27,11 +27,19 @@
       </a>
       <a
         mat-list-item
-        routerLink="/admin"
+        routerLink="/admin/orders"
         routerLinkActive="active-link"
         *ngIf="hasRole(user, 'Owner')">
-        <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
-        <span matListItemTitle>Administración</span>
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matListItemTitle>Órdenes Activas</span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/products"
+        routerLinkActive="active-link"
+        *ngIf="hasRole(user, 'Owner')">
+        <mat-icon matListItemIcon>menu_book</mat-icon>
+        <span matListItemTitle>Productos</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
