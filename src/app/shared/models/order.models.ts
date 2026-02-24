@@ -25,6 +25,8 @@ export interface UpdateOrderRequest {
 export interface CheckoutRequest {
   orderId: number;
   paymentMethod: PaymentMethod;
+  discount?: number;
+  tax?: number;
 }
 
 export interface OrderItemDto {
