@@ -14,6 +14,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { ActiveOrdersComponent } from './active-orders/active-orders.component';
@@ -24,6 +25,8 @@ import { ProductsCatalogComponent } from './products-catalog/products-catalog.co
 import { CategoriesCatalogComponent } from './categories-catalog/categories-catalog.component';
 import { CategoryDialogComponent } from './dialogs/category-dialog/category-dialog.component';
 import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard.component';
+import { UsersManagementComponent } from './users-management/users-management.component';
+import { UserDialogComponent } from './dialogs/user-dialog/user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard.compo
     CategoriesCatalogComponent,
     CategoryDialogComponent,
     OwnerDashboardComponent,
+    UsersManagementComponent,
   ],
   imports: [
     CommonModule,
@@ -53,6 +57,8 @@ import { OwnerDashboardComponent } from './owner-dashboard/owner-dashboard.compo
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatChipsModule,
+    UserDialogComponent,
   ],
 })
 export class AdminModule {}

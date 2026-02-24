@@ -7,7 +7,8 @@ import { ShellComponent } from './shared/components/shell/shell.component';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+    loadChildren: () =>
+      import('./features/auth/auth.module').then((m) => m.AuthModule),
   },
   {
     path: '',
@@ -18,35 +19,40 @@ const routes: Routes = [
         path: 'waiter',
         canActivate: [RoleGuard],
         data: { roles: ['Waiter', 'Owner'] },
-        loadChildren: () => import('./features/waiter/waiter.module').then(m => m.WaiterModule)
+        loadChildren: () =>
+          import('./features/waiter/waiter.module').then((m) => m.WaiterModule),
       },
       {
         path: 'kitchen',
         canActivate: [RoleGuard],
         data: { roles: ['Kitchen', 'Owner'] },
-        loadChildren: () => import('./features/kitchen/kitchen.module').then(m => m.KitchenModule)
+        loadChildren: () =>
+          import('./features/kitchen/kitchen.module').then(
+            (m) => m.KitchenModule,
+          ),
       },
       {
         path: 'admin',
         canActivate: [RoleGuard],
-        data: { roles: ['Owner'] },
-        loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule)
+        data: { roles: ['Admin', 'Owner'] },
+        loadChildren: () =>
+          import('./features/admin/admin.module').then((m) => m.AdminModule),
       },
       {
         path: '',
         redirectTo: 'waiter',
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '**',
-    redirectTo: 'login'
-  }
+    redirectTo: 'login',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -32,7 +32,7 @@
         mat-list-item
         routerLink="/admin/dashboard"
         routerLinkActive="active-link"
-        *ngIf="hasRole(user, 'Owner')"
+        *ngIf="hasRole(user, 'Admin', 'Owner')"
       >
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboard</span>
@@ -41,7 +41,7 @@
         mat-list-item
         routerLink="/admin/orders"
         routerLinkActive="active-link"
-        *ngIf="hasRole(user, 'Owner')"
+        *ngIf="hasRole(user, 'Admin', 'Owner')"
       >
         <mat-icon matListItemIcon>receipt_long</mat-icon>
         <span matListItemTitle>Órdenes Activas</span>
@@ -50,7 +50,7 @@
         mat-list-item
         routerLink="/admin/products"
         routerLinkActive="active-link"
-        *ngIf="hasRole(user, 'Owner')"
+        *ngIf="hasRole(user, 'Admin', 'Owner')"
       >
         <mat-icon matListItemIcon>menu_book</mat-icon>
         <span matListItemTitle>Productos</span>
@@ -59,10 +59,19 @@
         mat-list-item
         routerLink="/admin/categories"
         routerLinkActive="active-link"
-        *ngIf="hasRole(user, 'Owner')"
+        *ngIf="hasRole(user, 'Admin', 'Owner')"
       >
         <mat-icon matListItemIcon>category</mat-icon>
         <span matListItemTitle>Categorias</span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="/admin/users"
+        routerLinkActive="active-link"
+        *ngIf="hasRole(user, 'Admin', 'Owner')"
+      >
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Usuarios</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>

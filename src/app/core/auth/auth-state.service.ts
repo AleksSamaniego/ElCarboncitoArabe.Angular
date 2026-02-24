@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UserDto } from '../../shared/models';
+import { AuthUserDto } from '../../shared/models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthStateService {
-  private readonly _currentUser$ = new BehaviorSubject<UserDto | null>(null);
+  private readonly _currentUser$ = new BehaviorSubject<AuthUserDto | null>(
+    null,
+  );
 
-  readonly currentUser$: Observable<UserDto | null> = this._currentUser$.asObservable();
+  readonly currentUser$: Observable<AuthUserDto | null> =
+    this._currentUser$.asObservable();
 
-  get currentUser(): UserDto | null {
+  get currentUser(): AuthUserDto | null {
     return this._currentUser$.getValue();
   }
 
-  setCurrentUser(user: UserDto | null): void {
+  setCurrentUser(user: AuthUserDto | null): void {
     this._currentUser$.next(user);
   }
 }

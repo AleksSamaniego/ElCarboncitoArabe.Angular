@@ -5,10 +5,10 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
-  user: UserDto;
+  user: AuthUserDto;
 }
 
-export interface UserDto {
+export interface AuthUserDto {
   id: string;
   name: string;
   email: string;

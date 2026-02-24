@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? "Editar Usuario" : "Agregar Usuario" }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" placeholder="Nombre completo" />
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        El nombre es requerido
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        placeholder="correo@ejemplo.com"
+      />
+      <mat-error *ngIf="form.get('email')?.hasError('required')">
+        El email es requerido
+      </mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email')">
+        Ingresa un email válido
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Rol</mat-label>
+      <mat-select formControlName="role">
+        <mat-option>-- Selecciona un rol --</mat-option>
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('role')?.hasError('required')">
+        El rol es requerido
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="form-field" *ngIf="!isEditMode">
+      <mat-label>Contraseña</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        type="password"
+        placeholder="Mínimo 8 caracteres"
+      />
+      <mat-error *ngIf="form.get('password')?.hasError('required')">
+        La contraseña es requerida
+      </mat-error>
+      <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+        La contraseña debe tener al menos 8 caracteres
+      </mat-error>
+    </mat-form-field>
+
+    <div *ngIf="isEditMode" class="form-field">
+      <mat-checkbox formControlName="isActive"> Usuario activo </mat-checkbox>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid"
+  >
+    {{ isEditMode ? "Actualizar" : "Crear" }}
+  </button>
+</mat-dialog-actions>

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthStateService } from './auth-state.service';
-import { UserDto } from '../../shared/models';
+import { AuthUserDto } from '../../shared/models';
 
 describe('AuthStateService', () => {
   let service: AuthStateService;
@@ -26,7 +26,7 @@ describe('AuthStateService', () => {
   });
 
   it('should update currentUser when setCurrentUser is called', () => {
-    const user: UserDto = {
+    const user: AuthUserDto = {
       id: '1',
       name: 'admin',
       email: 'admin@test.com',
@@ -37,7 +37,7 @@ describe('AuthStateService', () => {
   });
 
   it('should emit the new user on currentUser$ after setCurrentUser', (done) => {
-    const user: UserDto = {
+    const user: AuthUserDto = {
       id: '2',
       name: 'waiter',
       email: 'waiter@test.com',
@@ -53,7 +53,7 @@ describe('AuthStateService', () => {
   });
 
   it('should clear currentUser when setCurrentUser(null) is called', () => {
-    const user: UserDto = {
+    const user: AuthUserDto = {
       id: '1',
       name: 'admin',
       email: 'admin@test.com',

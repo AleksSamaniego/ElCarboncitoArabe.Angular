@@ -47,6 +47,7 @@ export class LoginComponent {
     switch (role) {
       case 'Kitchen':
         return '/kitchen';
+      case 'Admin':
       case 'Owner':
         return '/admin';
       default:

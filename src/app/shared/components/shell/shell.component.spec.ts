@@ -14,7 +14,7 @@ import { of } from 'rxjs';
 import { ShellComponent } from './shell.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
-import { UserDto } from '../../models';
+import { AuthUserDto } from '../../models';
 
 describe('ShellComponent', () => {
   let authService: jasmine.SpyObj<AuthService>;
@@ -22,7 +22,7 @@ describe('ShellComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let breakpointObserver: jasmine.SpyObj<BreakpointObserver>;
 
-  const mockUser: UserDto = {
+  const mockUser: AuthUserDto = {
     id: '1',
     name: 'owner',
     email: 'owner@test.com',
@@ -95,7 +95,7 @@ describe('ShellComponent', () => {
     });
 
     it('should return true when user role matches', () => {
-      const user: UserDto = {
+      const user: AuthUserDto = {
         id: '1',
         name: 'waiter',
         email: '',
@@ -105,7 +105,7 @@ describe('ShellComponent', () => {
     });
 
     it('should return false when user role does not match', () => {
-      const user: UserDto = {
+      const user: AuthUserDto = {
         id: '1',
         name: 'waiter',
         email: '',

@@ -6,3 +6,4 @@ export * from './product.models';
 export * from './platform.models';
 export * from './order.models';
 export * from './payment-method.models';
+export * from './user.models';

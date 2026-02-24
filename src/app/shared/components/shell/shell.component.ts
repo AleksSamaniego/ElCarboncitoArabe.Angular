@@ -5,22 +5,22 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
-import { UserDto } from '../../models';
+import { AuthUserDto } from '../../models';
 
 @Component({
   selector: 'app-shell',
   templateUrl: './shell.component.html',
-  styleUrl: './shell.component.scss'
+  styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
-  readonly currentUser$: Observable<UserDto | null>;
+  readonly currentUser$: Observable<AuthUserDto | null>;
   readonly isHandset$: Observable<boolean>;
 
   constructor(
     private readonly authService: AuthService,
     private readonly authState: AuthStateService,
     private readonly router: Router,
-    private readonly breakpointObserver: BreakpointObserver
+    private readonly breakpointObserver: BreakpointObserver,
   ) {
     const stored = this.authService.getCurrentUser();
     if (stored) {
@@ -29,10 +29,10 @@ export class ShellComponent {
     this.currentUser$ = this.authState.currentUser$;
     this.isHandset$ = this.breakpointObserver
       .observe(Breakpoints.Handset)
-      .pipe(map(result => result.matches));
+      .pipe(map((result) => result.matches));
   }
 
-  hasRole(user: UserDto | null, ...roles: string[]): boolean {
+  hasRole(user: AuthUserDto | null, ...roles: string[]): boolean {
     return user != null && roles.includes(user.role);
   }
 

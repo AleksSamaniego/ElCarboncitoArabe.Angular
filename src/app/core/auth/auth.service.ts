@@ -4,7 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { AppConfigService } from '../config/app-config.service';
 import { ApiRoutes } from '../config/api-routes';
 import { AuthStateService } from './auth-state.service';
-import { LoginRequest, LoginResponse, UserDto } from '../../shared/models';
+import { LoginRequest, LoginResponse, AuthUserDto } from '../../shared/models';
 
 const TOKEN_KEY = 'auth_token';
 
@@ -42,7 +42,7 @@ export class AuthService {
     this.authState.setCurrentUser(null);
   }
 
-  getCurrentUser(): UserDto | null {
+  getCurrentUser(): AuthUserDto | null {
     const token = this.getToken();
     if (!token) {
       return null;
@@ -50,7 +50,7 @@ export class AuthService {
     return this.decodeToken(token);
   }
 
-  private decodeToken(token: string): UserDto | null {
+  private decodeToken(token: string): AuthUserDto | null {
     try {
       const parts = token.split('.');
       if (parts.length !== 3) {
