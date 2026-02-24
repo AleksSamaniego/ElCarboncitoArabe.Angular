@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>
+  {{ isEdit ? "Editar categoria" : "Agregar categoria" }}
+</h2>
+
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" placeholder="Ej. Entradas" />
+    <mat-error *ngIf="form.get('name')?.hasError('required')"
+      >El nombre es requerido</mat-error
+    >
+    <mat-error *ngIf="form.get('name')?.hasError('maxlength')"
+      >Maximo 100 caracteres</mat-error
+    >
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Orden</mat-label>
+    <input
+      matInput
+      type="number"
+      min="0"
+      formControlName="sortOrder"
+      placeholder="0"
+    />
+    <mat-error *ngIf="form.get('sortOrder')?.hasError('required')"
+      >El orden es requerido</mat-error
+    >
+    <mat-error *ngIf="form.get('sortOrder')?.hasError('min')"
+      >Debe ser 0 o mayor</mat-error
+    >
+  </mat-form-field>
+
+  <div class="active-toggle" *ngIf="isEdit">
+    <mat-checkbox formControlName="isActive">Activa</mat-checkbox>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="confirm()"
+    [disabled]="form.invalid"
+  >
+    <mat-icon>{{ isEdit ? "save" : "add" }}</mat-icon>
+    {{ isEdit ? "Guardar cambios" : "Agregar" }}
+  </button>
+</mat-dialog-actions>

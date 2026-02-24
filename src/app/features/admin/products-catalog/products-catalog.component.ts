@@ -104,6 +104,20 @@ export class ProductsCatalogComponent implements OnInit {
     });
   }
 
+  deleteProduct(product: ProductDto): void {
+    if (!confirm(`¿Desactivar el producto "${product.name}"?`)) return;
+    this.savingIds.add(product.id);
+    this.productsApi.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.products = this.products.map((p) =>
+          p.id === product.id ? { ...p, isActive: false } : p,
+        );
+        this.savingIds.delete(product.id);
+      },
+      error: () => this.savingIds.delete(product.id),
+    });
+  }
+
   isSaving(productId: string | null): boolean {
     return this.savingIds.has(productId);
   }

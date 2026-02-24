@@ -51,6 +51,31 @@
 
   <!-- Right panel: Order type + Cart -->
   <div class="order-panel">
+    <mat-card class="active-orders-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>playlist_add_check</mat-icon> Órdenes activas
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Seleccionar orden</mat-label>
+          <mat-select
+            [value]="selectedOrderId"
+            (selectionChange)="selectActiveOrder($event.value)"
+          >
+            <mat-option [value]="null">Nueva orden</mat-option>
+            <mat-option *ngFor="let order of activeOrders" [value]="order.id">
+              {{ getOrderDisplay(order) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p *ngIf="activeOrders.length === 0" class="empty-hint">
+          No hay órdenes activas
+        </p>
+      </mat-card-content>
+    </mat-card>
+
     <!-- Order type selector -->
     <mat-card class="order-type-card">
       <mat-card-header>
@@ -203,6 +228,12 @@
       </mat-card-content>
 
       <mat-card-actions class="cart-actions">
+        <div class="status-row" *ngIf="activeOrder">
+          <span class="status-label">Estado:</span>
+          <span class="status-value">{{
+            getStatusLabel(activeOrder.status)
+          }}</span>
+        </div>
         <button
           mat-raised-button
           color="primary"
@@ -215,11 +246,24 @@
         <button
           mat-raised-button
           color="accent"
-          [disabled]="!activeOrder || sendingToKitchen"
-          (click)="sendToKitchen()"
+          [disabled]="!activeOrder || sendingToKitchen || statusUpdating"
+          (click)="advanceStatus()"
         >
-          <mat-icon>send</mat-icon>
-          {{ sendingToKitchen ? "Enviando..." : "Enviar a cocina" }}
+          <mat-icon>arrow_forward</mat-icon>
+          {{
+            statusUpdating || sendingToKitchen
+              ? "Actualizando..."
+              : getNextStatusLabel(activeOrder?.status) || "Actualizar estado"
+          }}
+        </button>
+        <button
+          mat-stroked-button
+          color="warn"
+          [disabled]="!activeOrder || cancelling"
+          (click)="cancelOrder()"
+        >
+          <mat-icon>cancel</mat-icon>
+          {{ cancelling ? "Cancelando..." : "Cancelar" }}
         </button>
       </mat-card-actions>
     </mat-card>

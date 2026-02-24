@@ -1,7 +1,7 @@
-<div class="products-catalog-container">
+<div class="categories-catalog-container">
   <div class="page-header">
-    <mat-icon class="header-icon">restaurant_menu</mat-icon>
-    <h1 class="page-title">Catálogo de productos</h1>
+    <mat-icon class="header-icon">category</mat-icon>
+    <h1 class="page-title">Categorias</h1>
     <button
       mat-raised-button
       color="primary"
@@ -10,7 +10,7 @@
       [disabled]="isSaving(null)"
     >
       <mat-icon>add</mat-icon>
-      Agregar producto
+      Agregar categoria
     </button>
   </div>
 
@@ -19,62 +19,48 @@
       mode="indeterminate"
       diameter="48"
     ></mat-progress-spinner>
-    <p>Cargando productos...</p>
+    <p>Cargando categorias...</p>
   </div>
 
   <div *ngIf="!loading">
-    <p *ngIf="products.length === 0" class="empty-state">
-      <mat-icon>inventory_2</mat-icon>
-      No hay productos registrados
+    <p *ngIf="categories.length === 0" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      No hay categorias registradas
     </p>
 
-    <div *ngIf="products.length > 0" class="table-wrapper">
-      <table mat-table [dataSource]="products" class="products-table">
-        <!-- Nombre -->
+    <div *ngIf="categories.length > 0" class="table-wrapper">
+      <table mat-table [dataSource]="categories" class="categories-table">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Nombre</th>
           <td mat-cell *matCellDef="let row">
-            <span class="product-name">{{ $any(row).name }}</span>
+            <span class="category-name">{{ $any(row).name }}</span>
           </td>
         </ng-container>
 
-        <!-- Categoría -->
-        <ng-container matColumnDef="category">
-          <th mat-header-cell *matHeaderCellDef>Categoría</th>
-          <td mat-cell *matCellDef="let row">
-            {{ getCategoryName($any(row).categoryId) }}
-          </td>
+        <ng-container matColumnDef="sortOrder">
+          <th mat-header-cell *matHeaderCellDef>Orden</th>
+          <td mat-cell *matCellDef="let row">{{ $any(row).sortOrder }}</td>
         </ng-container>
 
-        <!-- Precio -->
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Precio</th>
-          <td mat-cell *matCellDef="let row">
-            {{ $any(row).price | currency: "MXN" : "symbol-narrow" : "1.2-2" }}
-          </td>
-        </ng-container>
-
-        <!-- Disponible -->
-        <ng-container matColumnDef="available">
-          <th mat-header-cell *matHeaderCellDef>Disponible</th>
+        <ng-container matColumnDef="active">
+          <th mat-header-cell *matHeaderCellDef>Activa</th>
           <td mat-cell *matCellDef="let row">
             <span
-              class="available-chip"
-              [ngClass]="$any(row).isActive ? 'available-yes' : 'available-no'"
+              class="active-chip"
+              [ngClass]="$any(row).isActive ? 'active-yes' : 'active-no'"
             >
-              {{ $any(row).isActive ? "Sí" : "No" }}
+              {{ $any(row).isActive ? "Si" : "No" }}
             </span>
           </td>
         </ng-container>
 
-        <!-- Acciones -->
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let row">
             <button
               mat-icon-button
               color="primary"
-              matTooltip="Editar producto"
+              matTooltip="Editar categoria"
               [disabled]="isSaving($any(row).id)"
               (click)="openEditDialog($any(row))"
             >
@@ -83,9 +69,9 @@
             <button
               mat-icon-button
               color="warn"
-              matTooltip="Desactivar producto"
+              matTooltip="Desactivar categoria"
               [disabled]="isSaving($any(row).id)"
-              (click)="deleteProduct($any(row))"
+              (click)="deleteCategory($any(row))"
             >
               <mat-icon>block</mat-icon>
             </button>
@@ -96,7 +82,7 @@
         <tr
           mat-row
           *matRowDef="let row; columns: displayedColumns"
-          class="product-row"
+          class="category-row"
         ></tr>
       </table>
     </div>

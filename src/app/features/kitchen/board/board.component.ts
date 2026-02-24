@@ -3,8 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { OrdersApiService } from '../../../core/api/orders-api.service';
+import { TablesApiService } from '../../../core/api/tables-api.service';
 import { OrdersRealtimeService } from '../../../core/realtime/orders-realtime.service';
-import { OrderDto, OrderStatus, OrderType } from '../../../shared/models';
+import {
+  OrderDto,
+  OrderStatus,
+  OrderType,
+  TableDto,
+} from '../../../shared/models';
 
 interface KanbanColumn {
   status: OrderStatus;
@@ -23,8 +29,10 @@ export class BoardComponent implements OnInit, OnDestroy {
   readonly OrderType = OrderType;
 
   orders: OrderDto[] = [];
+  tables: TableDto[] = [];
   loading = false;
   advancing: { [orderId: string]: boolean } = {};
+  private readonly tableNameById = new Map<string, string>();
 
   readonly columns: KanbanColumn[] = [
     {
@@ -84,11 +92,29 @@ export class BoardComponent implements OnInit, OnDestroy {
   constructor(
     private readonly ordersApi: OrdersApiService,
     private readonly realtime: OrdersRealtimeService,
+    private readonly tablesApi: TablesApiService,
   ) {}
 
   ngOnInit(): void {
+    this.loadTables();
     this.loadOrders();
     this.subscribeToRealtime();
+  }
+
+  private loadTables(): void {
+    this.tablesApi
+      .getTables()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (tables) => {
+          this.tables = tables;
+          this.buildTableMap(tables);
+        },
+        error: () => {
+          this.tables = [];
+          this.tableNameById.clear();
+        },
+      });
   }
 
   private loadOrders(): void {
@@ -164,6 +190,16 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   getNextLabel(order: OrderDto): string | null {
     return this.nextLabel[order.status] ?? null;
+  }
+
+  getTableLabel(tableId?: string | null): string {
+    if (!tableId) return '—';
+    return this.tableNameById.get(tableId) ?? tableId;
+  }
+
+  private buildTableMap(tables: TableDto[]): void {
+    this.tableNameById.clear();
+    tables.forEach((table) => this.tableNameById.set(table.id, table.name));
   }
 
   advance(order: OrderDto): void {

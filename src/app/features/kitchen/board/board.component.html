@@ -38,9 +38,9 @@
               </span>
             </mat-card-title>
             <mat-card-subtitle>
-              <span *ngIf="order.type === OrderType.DineIn"
-                >Mesa {{ order.tableId || "—" }}</span
-              >
+              <span *ngIf="order.type === OrderType.DineIn">{{
+                getTableLabel(order.tableId)
+              }}</span>
               <span *ngIf="order.type === OrderType.Platform">
                 {{ order.platformName
                 }}<span *ngIf="order.externalReference">

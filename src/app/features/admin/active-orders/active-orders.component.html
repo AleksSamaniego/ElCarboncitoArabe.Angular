@@ -55,7 +55,7 @@
           <th mat-header-cell *matHeaderCellDef>Mesa / Plataforma</th>
           <td mat-cell *matCellDef="let row">
             <span *ngIf="$any(row).type === OrderType.DineIn"
-              >Mesa {{ $any(row).tableId || "—" }}</span
+              >Mesa {{ getTableLabel($any(row).tableId) }}</span
             >
             <span *ngIf="$any(row).type === OrderType.Platform">
               {{ $any(row).platformName

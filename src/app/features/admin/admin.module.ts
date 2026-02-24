@@ -18,7 +18,8 @@ import { CheckoutDialogComponent } from './dialogs/checkout-dialog/checkout-dial
 import { ChangeTypeDialogComponent } from './dialogs/change-type-dialog/change-type-dialog.component';
 import { ProductDialogComponent } from './dialogs/product-dialog/product-dialog.component';
 import { ProductsCatalogComponent } from './products-catalog/products-catalog.component';
-
+import { CategoriesCatalogComponent } from './categories-catalog/categories-catalog.component';
+import { CategoryDialogComponent } from './dialogs/category-dialog/category-dialog.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,9 @@ import { ProductsCatalogComponent } from './products-catalog/products-catalog.co
     CheckoutDialogComponent,
     ChangeTypeDialogComponent,
     ProductDialogComponent,
-    ProductsCatalogComponent
+    ProductsCatalogComponent,
+    CategoriesCatalogComponent,
+    CategoryDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -41,7 +44,7 @@ import { ProductsCatalogComponent } from './products-catalog/products-catalog.co
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
-    MatCheckboxModule
-  ]
+    MatCheckboxModule,
+  ],
 })
-export class AdminModule { }
+export class AdminModule {}

@@ -14,9 +14,11 @@ import {
   OrderStatus,
   OrderType,
   PaymentStatus,
+  TableDto,
 } from '../../../shared/models';
 import { CheckoutDialogComponent } from '../dialogs/checkout-dialog/checkout-dialog.component';
 import { ChangeTypeDialogComponent } from '../dialogs/change-type-dialog/change-type-dialog.component';
+import { TablesApiService } from '../../../core/api/tables-api.service';
 
 @Component({
   selector: 'app-active-orders',
@@ -29,8 +31,10 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
   readonly PaymentStatus = PaymentStatus;
 
   orders: OrderDto[] = [];
+  tables: TableDto[] = [];
   loading = false;
   processingIds = new Set<string>();
+  private readonly tableNameById = new Map<string, string>();
 
   readonly displayedColumns = [
     'id',
@@ -70,11 +74,25 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
     private readonly ordersApi: OrdersApiService,
     private readonly realtime: OrdersRealtimeService,
     private readonly dialog: MatDialog,
+    private readonly tablesApi: TablesApiService,
   ) {}
 
   ngOnInit(): void {
+    this.loadTables();
     this.loadOrders();
     this.subscribeToRealtime();
+  }
+
+  private loadTables(): void {
+    this.tablesApi
+      .getTables()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (tables) => {
+          this.tables = tables;
+          this.buildTableMap(tables);
+        },
+      });
   }
 
   private loadOrders(): void {
@@ -231,6 +249,16 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
 
   getPaymentStatusClass(status: PaymentStatus): string {
     return PaymentStatus[status].toLowerCase();
+  }
+
+  getTableLabel(tableId?: string | null): string {
+    if (!tableId) return '—';
+    return this.tableNameById.get(tableId) ?? tableId;
+  }
+
+  private buildTableMap(tables: TableDto[]): void {
+    this.tableNameById.clear();
+    tables.forEach((table) => this.tableNameById.set(table.id, table.name));
   }
 
   ngOnDestroy(): void {

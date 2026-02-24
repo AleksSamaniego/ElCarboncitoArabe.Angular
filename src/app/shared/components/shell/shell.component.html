@@ -46,6 +46,15 @@
         <mat-icon matListItemIcon>menu_book</mat-icon>
         <span matListItemTitle>Productos</span>
       </a>
+      <a
+        mat-list-item
+        routerLink="/admin/categories"
+        routerLinkActive="active-link"
+        *ngIf="hasRole(user, 'Owner')"
+      >
+        <mat-icon matListItemIcon>category</mat-icon>
+        <span matListItemTitle>Categorias</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
