@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../config/app-config.service';
 import { ApiRoutes } from '../config/api-routes';
@@ -32,6 +32,15 @@ export class OrdersApiService {
     return this.http.get<OrderDto[]>(url);
   }
 
+  getOrderHistory(date?: string): Observable<OrderDto[]> {
+    const url = this.config.buildApiUrl(`${ApiRoutes.orders}/history`);
+    let params = new HttpParams();
+    if (date != null) {
+      params = params.set('date', date);
+    }
+    return this.http.get<OrderDto[]>(url, { params });
+  }
+
   getOrder(id: number): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}`);
     return this.http.get<OrderDto>(url);
@@ -54,7 +63,7 @@ export class OrdersApiService {
 
   changeStatus(id: number, status: OrderStatus): Observable<OrderDto> {
     const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/status`);
-    return this.http.patch<OrderDto>(url, { status });
+    return this.http.post<OrderDto>(url, { status });
   }
 
   cancelOrder(id: number): Observable<OrderDto> {
@@ -68,7 +77,7 @@ export class OrdersApiService {
   }
 
   changeType(id: number, req: ChangeTypeRequest): Observable<OrderDto> {
-    const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/type`);
-    return this.http.patch<OrderDto>(url, req);
+    const url = this.config.buildApiUrl(`${ApiRoutes.orders}/${id}/change-type`);
+    return this.http.post<OrderDto>(url, req);
   }
 }

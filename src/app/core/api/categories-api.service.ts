@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../config/app-config.service';
 import { ApiRoutes } from '../config/api-routes';
-import { CategoryDto } from '../../shared/models';
+import { CategoryDto, CreateCategoryRequest } from '../../shared/models';
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +17,25 @@ export class CategoriesApiService {
   getCategories(): Observable<CategoryDto[]> {
     const url = this.config.buildApiUrl(ApiRoutes.categories);
     return this.http.get<CategoryDto[]>(url);
+  }
+
+  getCategory(id: string): Observable<CategoryDto> {
+    const url = this.config.buildApiUrl(`${ApiRoutes.categories}/${id}`);
+    return this.http.get<CategoryDto>(url);
+  }
+
+  createCategory(req: CreateCategoryRequest): Observable<CategoryDto> {
+    const url = this.config.buildApiUrl(ApiRoutes.categories);
+    return this.http.post<CategoryDto>(url, req);
+  }
+
+  updateCategory(id: string, req: CreateCategoryRequest): Observable<CategoryDto> {
+    const url = this.config.buildApiUrl(`${ApiRoutes.categories}/${id}`);
+    return this.http.put<CategoryDto>(url, req);
+  }
+
+  deleteCategory(id: string): Observable<void> {
+    const url = this.config.buildApiUrl(`${ApiRoutes.categories}/${id}`);
+    return this.http.delete<void>(url);
   }
 }

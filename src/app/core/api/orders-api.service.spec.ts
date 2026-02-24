@@ -125,13 +125,13 @@ describe('OrdersApiService', () => {
   });
 
   describe('changeStatus', () => {
-    it('should PATCH orders/:id/status with the new status', () => {
+    it('should POST to orders/:id/status with the new status', () => {
       service.changeStatus(1, OrderStatus.InProgress).subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
       const req = httpMock.expectOne(config.buildApiUrl('orders/1/status'));
-      expect(req.request.method).toBe('PATCH');
+      expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ status: OrderStatus.InProgress });
       req.flush(MOCK_ORDER);
     });
@@ -165,17 +165,39 @@ describe('OrdersApiService', () => {
   });
 
   describe('changeType', () => {
-    it('should PATCH orders/:id/type with the change type request', () => {
+    it('should POST to orders/:id/change-type with the change type request', () => {
       const changeTypeReq: ChangeTypeRequest = { type: OrderType.TakeAway };
 
       service.changeType(1, changeTypeReq).subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1/type'));
-      expect(req.request.method).toBe('PATCH');
+      const req = httpMock.expectOne(config.buildApiUrl('orders/1/change-type'));
+      expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(changeTypeReq);
       req.flush(MOCK_ORDER);
+    });
+  });
+
+  describe('getOrderHistory', () => {
+    it('should GET orders/history without date param', () => {
+      service.getOrderHistory().subscribe(orders => {
+        expect(orders).toEqual([MOCK_ORDER]);
+      });
+
+      const req = httpMock.expectOne(config.buildApiUrl('orders/history'));
+      expect(req.request.method).toBe('GET');
+      req.flush([MOCK_ORDER]);
+    });
+
+    it('should GET orders/history with date param when provided', () => {
+      service.getOrderHistory('2024-01-01').subscribe(orders => {
+        expect(orders).toEqual([MOCK_ORDER]);
+      });
+
+      const req = httpMock.expectOne(r => r.url === config.buildApiUrl('orders/history') && r.params.get('date') === '2024-01-01');
+      expect(req.request.method).toBe('GET');
+      req.flush([MOCK_ORDER]);
     });
   });
 });

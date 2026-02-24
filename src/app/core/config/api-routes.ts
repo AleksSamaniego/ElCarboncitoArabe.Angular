@@ -5,6 +5,7 @@ export const ApiRoutes = {
   customers: 'customers',
   tables: 'tables',
   platforms: 'platforms',
+  paymentMethods: 'payment-methods',
   auth: {
     login: 'auth/login',
     logout: 'auth/logout',
