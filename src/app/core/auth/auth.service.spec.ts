@@ -45,7 +45,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should POST to the correct URL and return the response', () => {
-      const credentials: LoginRequest = { username: 'admin', password: 'secret' };
+      const credentials: LoginRequest = { email: 'admin@test.com', password: 'secret' };
       const expectedUrl = config.buildApiUrl('auth/login');
 
       service.login(credentials).subscribe(response => {
@@ -59,13 +59,13 @@ describe('AuthService', () => {
     });
 
     it('should store the token in localStorage after login', () => {
-      service.login({ username: 'admin', password: 'secret' }).subscribe();
+      service.login({ email: 'admin@test.com', password: 'secret' }).subscribe();
       httpMock.expectOne(config.buildApiUrl('auth/login')).flush(MOCK_LOGIN_RESPONSE);
       expect(localStorage.getItem('auth_token')).toBe(MOCK_TOKEN);
     });
 
     it('should update authState with the decoded user after login', () => {
-      service.login({ username: 'admin', password: 'secret' }).subscribe();
+      service.login({ email: 'admin@test.com', password: 'secret' }).subscribe();
       httpMock.expectOne(config.buildApiUrl('auth/login')).flush(MOCK_LOGIN_RESPONSE);
       const user = authState.currentUser;
       expect(user).toBeTruthy();
@@ -95,7 +95,7 @@ describe('AuthService', () => {
     });
 
     it('should clear the current user in authState', () => {
-      service.login({ username: 'admin', password: 'secret' }).subscribe();
+      service.login({ email: 'admin@test.com', password: 'secret' }).subscribe();
       httpMock.expectOne(config.buildApiUrl('auth/login')).flush(MOCK_LOGIN_RESPONSE);
       service.logout();
       expect(authState.currentUser).toBeNull();

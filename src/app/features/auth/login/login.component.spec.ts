@@ -65,7 +65,7 @@ describe('LoginComponent', () => {
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
-    component.loginForm.setValue({ username: 'waiter', password: 'pass' });
+    component.loginForm.setValue({ email: 'waiter@test.com', password: 'pass' });
     component.onSubmit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/waiter']);
@@ -78,7 +78,7 @@ describe('LoginComponent', () => {
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
-    component.loginForm.setValue({ username: 'cook', password: 'pass' });
+    component.loginForm.setValue({ email: 'cook@test.com', password: 'pass' });
     component.onSubmit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/kitchen']);
@@ -91,7 +91,7 @@ describe('LoginComponent', () => {
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
-    component.loginForm.setValue({ username: 'admin', password: 'pass' });
+    component.loginForm.setValue({ email: 'admin@test.com', password: 'pass' });
     component.onSubmit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/admin']);
@@ -102,7 +102,7 @@ describe('LoginComponent', () => {
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
-    component.loginForm.setValue({ username: 'user', password: 'wrong' });
+    component.loginForm.setValue({ email: 'user@test.com', password: 'wrong' });
     component.onSubmit();
 
     expect(component.error).toBe('Usuario o contraseña incorrectos');

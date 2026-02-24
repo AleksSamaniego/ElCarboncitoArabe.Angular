@@ -19,7 +19,7 @@ export class LoginComponent {
     private readonly router: Router
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -32,6 +32,7 @@ export class LoginComponent {
     this.error = '';
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
+        this.loading = false;
         const user = this.authService.getCurrentUser();
         this.router.navigate([this.getDefaultRoute(user?.role)]);
       },
