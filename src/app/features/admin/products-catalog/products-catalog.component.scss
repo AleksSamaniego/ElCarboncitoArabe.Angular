@@ -2,7 +2,10 @@ $primary-red: #d32f2f;
 $primary-yellow: #ffc107;
 $primary-black: #1a1a1a;
 
-:host { display: block; padding: 16px; }
+:host {
+  display: block;
+  padding: 16px;
+}
 
 /* ── Header ── */
 .page-header {
@@ -27,7 +30,9 @@ $primary-black: #1a1a1a;
   flex: 1;
 }
 
-.add-btn { margin-left: auto; }
+.add-btn {
+  margin-left: auto;
+}
 
 /* ── Loading ── */
 .loading-container {
@@ -56,14 +61,18 @@ $primary-black: #1a1a1a;
   font-size: 16px;
   margin-top: 48px;
 
-  mat-icon { font-size: 22px; width: 22px; height: 22px; }
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
 }
 
 /* ── Table ── */
 .table-wrapper {
   overflow-x: auto;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .products-table {
@@ -71,7 +80,9 @@ $primary-black: #1a1a1a;
   background: #fff;
 }
 
-.product-row:hover { background: #f5f9ff; }
+.product-row:hover {
+  background: #f5f9ff;
+}
 
 .product-name {
   display: block;
@@ -92,12 +103,20 @@ $primary-black: #1a1a1a;
   font-size: 12px;
   font-weight: 600;
 
-  &.available-yes { background: #e8f5e9; color: #2e7d32; }
-  &.available-no  { background: #ffebee; color: #c62828; }
+  &.available-yes {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  &.available-no {
+    background: #ffebee;
+    color: #c62828;
+  }
 }
 
 /* ── Dialog ── */
-.full-width { width: 100%; }
+.full-width {
+  width: 100%;
+}
 
 .available-toggle {
   margin-top: 4px;

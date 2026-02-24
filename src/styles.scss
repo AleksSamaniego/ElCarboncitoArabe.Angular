@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 @include mat.core();
 
@@ -10,7 +10,8 @@ $carboncito-red: (
   200: #ef9a9a,
   300: #e57373,
   400: #ef5350,
-  500: #d32f2f,  // Primary red from logo
+  500: #d32f2f,
+  // Primary red from logo
   600: #c62828,
   700: #b71c1c,
   800: #a71d1d,
@@ -34,7 +35,7 @@ $carboncito-red: (
     A200: white,
     A400: white,
     A700: white,
-  )
+  ),
 );
 
 $carboncito-yellow: (
@@ -43,7 +44,8 @@ $carboncito-yellow: (
   200: #fff59d,
   300: #fff176,
   400: #ffee58,
-  500: #ffc107,  // Primary yellow from logo
+  500: #ffc107,
+  // Primary yellow from logo
   600: #ffb300,
   700: #ffa000,
   800: #ff8f00,
@@ -67,7 +69,7 @@ $carboncito-yellow: (
     A200: rgba(black, 0.87),
     A400: rgba(black, 0.87),
     A700: rgba(black, 0.87),
-  )
+  ),
 );
 
 // Create custom palettes
@@ -76,21 +78,24 @@ $carboncito-accent: mat.define-palette($carboncito-yellow, 500);
 $carboncito-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme
-$carboncito-theme: mat.define-light-theme((
-  color: (
-    primary: $carboncito-primary,
-    accent: $carboncito-accent,
-    warn: $carboncito-warn,
-  ),
-  typography: mat.define-typography-config(),
-  density: 0,
-));
+$carboncito-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $carboncito-primary,
+      accent: $carboncito-accent,
+      warn: $carboncito-warn,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
 
 // Include theme styles for core and each component used in your app
 @include mat.all-component-themes($carboncito-theme);
 
 // Global styles
-html, body {
+html,
+body {
   height: 100%;
 }
 
