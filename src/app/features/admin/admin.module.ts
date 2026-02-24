@@ -10,18 +10,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { ActiveOrdersComponent } from './active-orders/active-orders.component';
 import { CheckoutDialogComponent } from './dialogs/checkout-dialog/checkout-dialog.component';
 import { ChangeTypeDialogComponent } from './dialogs/change-type-dialog/change-type-dialog.component';
+import { ProductDialogComponent } from './dialogs/product-dialog/product-dialog.component';
+import { ProductsCatalogComponent } from './products-catalog/products-catalog.component';
 
 
 @NgModule({
   declarations: [
     ActiveOrdersComponent,
     CheckoutDialogComponent,
-    ChangeTypeDialogComponent
+    ChangeTypeDialogComponent,
+    ProductDialogComponent,
+    ProductsCatalogComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +40,8 @@ import { ChangeTypeDialogComponent } from './dialogs/change-type-dialog/change-t
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule
   ]
 })
 export class AdminModule { }

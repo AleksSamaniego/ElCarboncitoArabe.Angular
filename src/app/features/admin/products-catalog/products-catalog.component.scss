@@ -1,0 +1,95 @@
+:host { display: block; padding: 16px; }
+
+/* ── Header ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  .header-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #1976d2;
+  }
+}
+
+.page-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+  flex: 1;
+}
+
+.add-btn { margin-left: auto; }
+
+/* ── Loading ── */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: 16px;
+  color: #666;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #aaa;
+  font-size: 16px;
+  margin-top: 48px;
+
+  mat-icon { font-size: 22px; width: 22px; height: 22px; }
+}
+
+/* ── Table ── */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.products-table {
+  width: 100%;
+  background: #fff;
+}
+
+.product-row:hover { background: #f5f9ff; }
+
+.product-name {
+  display: block;
+  font-weight: 600;
+}
+
+.product-desc {
+  display: block;
+  font-size: 12px;
+  color: #888;
+}
+
+/* ── Available chip ── */
+.available-chip {
+  display: inline-block;
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.available-yes { background: #e8f5e9; color: #2e7d32; }
+  &.available-no  { background: #ffebee; color: #c62828; }
+}
+
+/* ── Dialog ── */
+.full-width { width: 100%; }
+
+.available-toggle {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
