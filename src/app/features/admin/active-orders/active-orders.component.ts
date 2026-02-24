@@ -21,7 +21,7 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
 
   orders: OrderDto[] = [];
   loading = false;
-  processingIds = new Set<number>();
+  processingIds = new Set<string>();
 
   readonly displayedColumns = ['id', 'type', 'location', 'status', 'total', 'paymentStatus', 'actions'];
 
@@ -120,7 +120,7 @@ export class ActiveOrdersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private removeOrder(id: number): void {
+  private removeOrder(id: string): void {
     this.orders = this.orders.filter(o => o.id !== id);
   }
 

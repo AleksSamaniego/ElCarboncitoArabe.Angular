@@ -20,7 +20,7 @@ import {
 } from '../../../shared/models';
 
 interface CartItem {
-  productId: number;
+  productId: string;
   productName: string;
   quantity: number;
   unitPrice: number;
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   activeOrder: OrderDto | null = null;
   cartItems: CartItem[] = [];
 
-  selectedCategoryId: number | null = null;
+  selectedCategoryId: string | null = null;
   searchText = '';
 
   loading = false;
@@ -184,7 +184,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return this.cartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
   }
 
-  selectCategory(id: number | null): void {
+  selectCategory(id: string | null): void {
     this.selectedCategoryId = id;
   }
 

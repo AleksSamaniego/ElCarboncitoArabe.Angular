@@ -24,7 +24,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   orders: OrderDto[] = [];
   loading = false;
-  advancing: { [orderId: number]: boolean } = {};
+  advancing: { [orderId: string]: boolean } = {};
 
   readonly columns: KanbanColumn[] = [
     { status: OrderStatus.Pending,    label: 'Enviado a Cocina', colorClass: 'col-pending',    icon: 'send' },
@@ -121,7 +121,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private removeOrder(id: number): void {
+  private removeOrder(id: string): void {
     this.orders = this.orders.filter(o => o.id !== id);
   }
 

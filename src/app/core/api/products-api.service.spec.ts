@@ -5,8 +5,8 @@ import { AppConfigService } from '../config/app-config.service';
 import { CreateProductRequest, ProductDto } from '../../shared/models';
 
 const MOCK_PRODUCTS: ProductDto[] = [
-  { id: 1, name: 'Shawarma', price: 5.5, categoryId: 1, isAvailable: true },
-  { id: 2, name: 'Falafel', price: 3.0, categoryId: 1, isAvailable: false }
+  { id: 'guid-1', name: 'Shawarma', price: 5.5, categoryId: 'cat-guid-1', isAvailable: true },
+  { id: 'guid-2', name: 'Falafel', price: 3.0, categoryId: 'cat-guid-1', isAvailable: false }
 ];
 
 describe('ProductsApiService', () => {
@@ -76,10 +76,10 @@ describe('ProductsApiService', () => {
       const payload: CreateProductRequest = {
         name: 'Shawarma',
         price: 5.5,
-        categoryId: 1,
+        categoryId: 'cat-guid-1',
         isAvailable: true
       };
-      const created: ProductDto = { id: 3, ...payload };
+      const created: ProductDto = { id: 'guid-3', ...payload };
 
       service.createProduct(payload).subscribe(product => {
         expect(product).toEqual(created);
@@ -97,16 +97,16 @@ describe('ProductsApiService', () => {
       const payload: CreateProductRequest = {
         name: 'Shawarma actualizado',
         price: 6.0,
-        categoryId: 1,
+        categoryId: 'cat-guid-1',
         isAvailable: true
       };
-      const updated: ProductDto = { id: 1, ...payload };
+      const updated: ProductDto = { id: 'guid-1', ...payload };
 
-      service.updateProduct(1, payload).subscribe(product => {
+      service.updateProduct('guid-1', payload).subscribe(product => {
         expect(product).toEqual(updated);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('products/1'));
+      const req = httpMock.expectOne(config.buildApiUrl('products/guid-1'));
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(payload);
       req.flush(updated);

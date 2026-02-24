@@ -15,7 +15,7 @@ export class ProductsCatalogComponent implements OnInit {
   products: ProductDto[] = [];
   categories: CategoryDto[] = [];
   loading = false;
-  savingIds = new Set<number | null>();
+  savingIds = new Set<string | null>();
 
   readonly displayedColumns = ['name', 'category', 'price', 'available', 'actions'];
 
@@ -44,7 +44,7 @@ export class ProductsCatalogComponent implements OnInit {
     });
   }
 
-  getCategoryName(categoryId: number): string {
+  getCategoryName(categoryId: string): string {
     return this.categories.find(c => c.id === categoryId)?.name ?? '—';
   }
 
@@ -84,7 +84,7 @@ export class ProductsCatalogComponent implements OnInit {
     });
   }
 
-  isSaving(productId: number | null): boolean {
+  isSaving(productId: string | null): boolean {
     return this.savingIds.has(productId);
   }
 }

@@ -57,8 +57,8 @@ export class ChangeTypeDialogComponent implements OnInit {
     if (this.form.invalid) return;
     const { type, tableId, platformId } = this.form.value;
     const req: ChangeTypeRequest = { type };
-    if (type === OrderType.DineIn && tableId) req.tableId = +tableId;
-    if (type === OrderType.Delivery && platformId) req.platformId = +platformId;
+    if (type === OrderType.DineIn && tableId) req.tableId = tableId;
+    if (type === OrderType.Delivery && platformId) req.platformId = platformId;
     this.dialogRef.close(req);
   }
 

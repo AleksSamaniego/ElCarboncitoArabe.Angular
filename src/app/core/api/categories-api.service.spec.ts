@@ -5,8 +5,8 @@ import { AppConfigService } from '../config/app-config.service';
 import { CategoryDto, CreateCategoryRequest } from '../../shared/models';
 
 const MOCK_CATEGORIES: CategoryDto[] = [
-  { id: 1, name: 'Entradas', description: 'Platos de entrada' },
-  { id: 2, name: 'Principales' }
+  { id: 'guid-1', name: 'Entradas', description: 'Platos de entrada' },
+  { id: 'guid-2', name: 'Principales' }
 ];
 
 describe('CategoriesApiService', () => {
@@ -59,7 +59,7 @@ describe('CategoriesApiService', () => {
   describe('createCategory', () => {
     it('should POST to categories and return the created category', () => {
       const payload: CreateCategoryRequest = { name: 'Postres', description: 'Postres árabes' };
-      const created: CategoryDto = { id: 3, ...payload };
+      const created: CategoryDto = { id: 'guid-3', ...payload };
 
       service.createCategory(payload).subscribe(category => {
         expect(category).toEqual(created);
@@ -76,7 +76,7 @@ describe('CategoriesApiService', () => {
     it('should PUT to categories/:id and return the updated category', () => {
       const id = 'abc-123';
       const payload: CreateCategoryRequest = { name: 'Entradas actualizado' };
-      const updated: CategoryDto = { id: 1, ...payload };
+      const updated: CategoryDto = { id: 'guid-1', ...payload };
 
       service.updateCategory(id, payload).subscribe(category => {
         expect(category).toEqual(updated);

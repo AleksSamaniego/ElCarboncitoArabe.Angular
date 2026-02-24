@@ -14,11 +14,11 @@ import {
 } from '../../shared/models';
 
 const MOCK_ORDER: OrderDto = {
-  id: 1,
+  id: 'order-guid-1',
   type: OrderType.DineIn,
   status: OrderStatus.Pending,
   paymentStatus: PaymentStatus.Unpaid,
-  tableId: 1,
+  tableId: 'table-guid-1',
   tableNumber: 1,
   items: [],
   subtotal: 10,
@@ -64,11 +64,11 @@ describe('OrdersApiService', () => {
 
   describe('getOrder', () => {
     it('should GET orders/:id and return the order', () => {
-      service.getOrder(1).subscribe(order => {
+      service.getOrder('order-guid-1').subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1'));
       expect(req.request.method).toBe('GET');
       req.flush(MOCK_ORDER);
     });
@@ -78,8 +78,8 @@ describe('OrdersApiService', () => {
     it('should POST to orders and return the created order', () => {
       const createReq: CreateOrderRequest = {
         type: OrderType.DineIn,
-        tableId: 1,
-        items: [{ productId: 1, quantity: 2 }]
+        tableId: 'table-guid-1',
+        items: [{ productId: 'product-guid-1', quantity: 2 }]
       };
 
       service.createOrder(createReq).subscribe(order => {
@@ -97,15 +97,15 @@ describe('OrdersApiService', () => {
     it('should PUT to orders/:id and return the updated order', () => {
       const updateReq: UpdateOrderRequest = {
         type: OrderType.DineIn,
-        tableId: 1,
-        items: [{ productId: 1, quantity: 3 }]
+        tableId: 'table-guid-1',
+        items: [{ productId: 'product-guid-1', quantity: 3 }]
       };
 
-      service.updateOrder(1, updateReq).subscribe(order => {
+      service.updateOrder('order-guid-1', updateReq).subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1'));
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(updateReq);
       req.flush(MOCK_ORDER);
@@ -114,11 +114,11 @@ describe('OrdersApiService', () => {
 
   describe('sendToKitchen', () => {
     it('should POST to orders/:id/send-to-kitchen', () => {
-      service.sendToKitchen(1).subscribe(order => {
+      service.sendToKitchen('order-guid-1').subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1/send-to-kitchen'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1/send-to-kitchen'));
       expect(req.request.method).toBe('POST');
       req.flush(MOCK_ORDER);
     });
@@ -126,11 +126,11 @@ describe('OrdersApiService', () => {
 
   describe('changeStatus', () => {
     it('should POST to orders/:id/status with the new status', () => {
-      service.changeStatus(1, OrderStatus.InProgress).subscribe(order => {
+      service.changeStatus('order-guid-1', OrderStatus.InProgress).subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1/status'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1/status'));
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ status: OrderStatus.InProgress });
       req.flush(MOCK_ORDER);
@@ -139,11 +139,11 @@ describe('OrdersApiService', () => {
 
   describe('cancelOrder', () => {
     it('should POST to orders/:id/cancel', () => {
-      service.cancelOrder(1).subscribe(order => {
+      service.cancelOrder('order-guid-1').subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1/cancel'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1/cancel'));
       expect(req.request.method).toBe('POST');
       req.flush(MOCK_ORDER);
     });
@@ -151,13 +151,13 @@ describe('OrdersApiService', () => {
 
   describe('checkout', () => {
     it('should POST to orders/:id/checkout with the checkout request', () => {
-      const checkoutReq: CheckoutRequest = { orderId: 1, paymentMethod: PaymentMethod.Cash };
+      const checkoutReq: CheckoutRequest = { orderId: 'order-guid-1', paymentMethod: PaymentMethod.Cash };
 
-      service.checkout(1, checkoutReq).subscribe(order => {
+      service.checkout('order-guid-1', checkoutReq).subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1/checkout'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1/checkout'));
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(checkoutReq);
       req.flush(MOCK_ORDER);
@@ -168,11 +168,11 @@ describe('OrdersApiService', () => {
     it('should POST to orders/:id/change-type with the change type request', () => {
       const changeTypeReq: ChangeTypeRequest = { type: OrderType.TakeAway };
 
-      service.changeType(1, changeTypeReq).subscribe(order => {
+      service.changeType('order-guid-1', changeTypeReq).subscribe(order => {
         expect(order).toEqual(MOCK_ORDER);
       });
 
-      const req = httpMock.expectOne(config.buildApiUrl('orders/1/change-type'));
+      const req = httpMock.expectOne(config.buildApiUrl('orders/order-guid-1/change-type'));
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(changeTypeReq);
       req.flush(MOCK_ORDER);

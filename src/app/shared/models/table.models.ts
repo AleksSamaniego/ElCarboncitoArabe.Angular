@@ -1,5 +1,5 @@
 export interface TableDto {
-  id: number;
+  id: string;
   number: number;
   capacity: number;
   isAvailable: boolean;

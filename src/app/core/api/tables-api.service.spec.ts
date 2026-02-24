@@ -5,8 +5,8 @@ import { AppConfigService } from '../config/app-config.service';
 import { TableDto, CreateTableRequest, UpdateTableRequest } from '../../shared/models';
 
 const MOCK_TABLES: TableDto[] = [
-  { id: 1, number: 1, capacity: 4, isAvailable: true },
-  { id: 2, number: 2, capacity: 2, isAvailable: false }
+  { id: 'guid-1', number: 1, capacity: 4, isAvailable: true },
+  { id: 'guid-2', number: 2, capacity: 2, isAvailable: false }
 ];
 
 describe('TablesApiService', () => {
@@ -59,7 +59,7 @@ describe('TablesApiService', () => {
   describe('createTable', () => {
     it('should POST to tables and return the created table', () => {
       const payload: CreateTableRequest = { number: 3, capacity: 6 };
-      const created: TableDto = { id: 3, isAvailable: true, ...payload };
+      const created: TableDto = { id: 'guid-3', isAvailable: true, ...payload };
 
       service.createTable(payload).subscribe(table => {
         expect(table).toEqual(created);
@@ -76,7 +76,7 @@ describe('TablesApiService', () => {
     it('should PUT to tables/:id and return the updated table', () => {
       const id = 'abc-123';
       const payload: UpdateTableRequest = { number: 1, capacity: 8, isAvailable: false };
-      const updated: TableDto = { id: 1, ...payload };
+      const updated: TableDto = { id: 'guid-1', ...payload };
 
       service.updateTable(id, payload).subscribe(table => {
         expect(table).toEqual(updated);

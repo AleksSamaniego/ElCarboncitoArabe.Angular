@@ -5,8 +5,8 @@ import { AppConfigService } from '../config/app-config.service';
 import { PlatformDto, CreatePlatformRequest } from '../../shared/models';
 
 const MOCK_PLATFORMS: PlatformDto[] = [
-  { id: 1, name: 'Rappi', commissionRate: 0.15 },
-  { id: 2, name: 'Uber Eats', commissionRate: 0.3 }
+  { id: 'guid-1', name: 'Rappi', commissionRate: 0.15 },
+  { id: 'guid-2', name: 'Uber Eats', commissionRate: 0.3 }
 ];
 
 describe('PlatformsApiService', () => {
@@ -59,7 +59,7 @@ describe('PlatformsApiService', () => {
   describe('createPlatform', () => {
     it('should POST to platforms and return the created platform', () => {
       const payload: CreatePlatformRequest = { name: 'PedidosYa', commissionRate: 0.2 };
-      const created: PlatformDto = { id: 3, ...payload };
+      const created: PlatformDto = { id: 'guid-3', ...payload };
 
       service.createPlatform(payload).subscribe(platform => {
         expect(platform).toEqual(created);
@@ -76,7 +76,7 @@ describe('PlatformsApiService', () => {
     it('should PUT to platforms/:id and return the updated platform', () => {
       const id = 'abc-123';
       const payload: CreatePlatformRequest = { name: 'Rappi updated', commissionRate: 0.18 };
-      const updated: PlatformDto = { id: 1, ...payload };
+      const updated: PlatformDto = { id: 'guid-1', ...payload };
 
       service.updatePlatform(id, payload).subscribe(platform => {
         expect(platform).toEqual(updated);
