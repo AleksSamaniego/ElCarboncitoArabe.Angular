@@ -9,23 +9,23 @@ import { LoginRequest, LoginResponse, UserDto } from '../../shared/models';
 const TOKEN_KEY = 'auth_token';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   constructor(
     private readonly http: HttpClient,
     private readonly config: AppConfigService,
-    private readonly authState: AuthStateService
+    private readonly authState: AuthStateService,
   ) {}
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     const url = this.config.buildApiUrl(ApiRoutes.auth.login);
     return this.http.post<LoginResponse>(url, credentials).pipe(
-      tap(response => {
-        this.setToken(response.accessToken);
-        const user = this.decodeToken(response.accessToken);
+      tap((response) => {
+        this.setToken(response.token);
+        const user = this.decodeToken(response.token);
         this.authState.setCurrentUser(user);
-      })
+      }),
     );
   }
 
@@ -56,14 +56,18 @@ export class AuthService {
       if (parts.length !== 3) {
         return null;
       }
-      const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-
-      if (payload.exp !== undefined && payload.exp * 1000 < Date.now()) {
+      // const payload = JSON.parse(
+      //   atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')),
+      // );
+      const payload = this.decodeBase64Url(parts[1]);
+      const data = JSON.parse(payload);
+      if (data.exp !== undefined && data.exp * 1000 < Date.now()) {
         return null;
       }
 
-      const id: string = payload.sub ?? payload.id ?? '';
-      const username: string = payload.username ?? payload.unique_name ?? payload.name ?? '';
+      const id: string = data.sub ?? data.id ?? '';
+      const username: string =
+        data.username ?? data.unique_name ?? data.name ?? '';
       if (!id || !username) {
         return null;
       }
@@ -71,11 +75,27 @@ export class AuthService {
       return {
         id,
         username,
-        email: payload.email ?? '',
-        role: payload.role ?? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? ''
+        email: data.email ?? '',
+        role:
+          data.role ??
+          data[
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+          ] ??
+          '',
       };
     } catch {
       return null;
     }
+  }
+
+  private decodeBase64Url(input: string): string {
+    // base64url -> base64
+    let base64 = input.replace(/-/g, '+').replace(/_/g, '/');
+
+    // add padding if missing
+    const pad = base64.length % 4;
+    if (pad) base64 += '='.repeat(4 - pad);
+
+    return atob(base64);
   }
 }

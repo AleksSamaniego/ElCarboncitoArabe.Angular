@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5000/api',
-  signalRHubUrl: 'http://localhost:5000/hubs/orders'
+  apiBaseUrl: 'https://localhost:7052/api',
+  signalRHubUrl: 'https://localhost:7052/hubs/orders',
 };
